@@ -288,15 +288,11 @@ class Service(ServiceFactoryMixin):
             raise Exception("Empty list")
         extracted_data = []
         for container in tracks:
-            extracted_data.append(
-                (
-                    self.fetch_name(converted_response, container),
-                    self.fetch_track_length(converted_response, container)
-                )
-            )
-        return tuple(
-            (unicode(title), unicode(time)) for title, time in extracted_data
-        )
+            title = unicode(self.fetch_name(converted_response, container))
+            time = self.fetch_track_length(converted_response, container)
+            time = self.normalize_track_length(unicode(time))
+            extracted_data.append((title, time))
+        return tuple(extracted_data)
 
     # ------------------------------------------------------------------------
 

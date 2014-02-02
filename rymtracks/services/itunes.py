@@ -26,5 +26,4 @@ class ITunes(HTMLMixin, Service):
         return container.find("td", class_="name").find("span", class_="text")
 
     def fetch_track_length(self, soup, container):
-        time = container.find("td", class_="time").find("span", class_="text")
-        return self.normalize_track_length(unicode(time))
+        return container.find("td", class_="time").find("span", class_="text")

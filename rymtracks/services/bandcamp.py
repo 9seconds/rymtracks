@@ -23,5 +23,4 @@ class BandCamp(HTMLMixin, Service):
         return container.find("span", itemprop="name")
 
     def fetch_track_length(self, soup, container):
-        time = container.find("span", class_="time")
-        return self.normalize_track_length(unicode(time))
+        return container.find("span", class_="time")

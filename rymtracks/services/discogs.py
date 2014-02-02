@@ -23,5 +23,4 @@ class Discogs(HTMLMixin, Service):
         return container.find("span", class_="track_title")
 
     def fetch_track_length(self, soup, container):
-        time = container.find("td", class_="track_duration").span
-        return self.normalize_track_length(unicode(time))
+        return container.find("td", class_="track_duration").span

@@ -27,5 +27,4 @@ class AllMusic(HTMLMixin, Service):
         return container.find("div", itemprop="name")
 
     def fetch_track_length(self, soup, container):
-        time = container.find("td", class_="time")
-        return self.normalize_track_length(unicode(time))
+        return container.find("td", class_="time")
