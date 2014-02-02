@@ -90,7 +90,10 @@ class Water(object):
 
     def __unicode__(self):
         if self._soup:
-            return unicode(self._soup.get_text().strip())
+            text = self._soup
+            if not isinstance(self._soup, basestring):
+                text = self._soup.get_text()
+            return unicode(text.strip())
         else:
             return ""
 
@@ -358,7 +361,7 @@ class SchemaOrgService(HTMLMixin, Service):
         )
 
     def fetch_name(self, soup, container):
-        raise container.find(itemprop="name")
+        return container.find(itemprop="name")
 
     def fetch_track_length(self, soup, container):
         iso = unicode(container.find(itemprop="duration")["content"])

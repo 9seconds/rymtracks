@@ -5,26 +5,14 @@ http://allmusic.com
 """
 
 
-from . import Service, HTMLMixin
+from . import SchemaOrgService
 
 
 ##############################################################################
 
 
-class AllMusic(HTMLMixin, Service):
+class AllMusic(SchemaOrgService):
     """
     Implementation of Service which is intended to parse AMG.
     """
-
-    def fetch_tracks(self, soup):
-        return soup.find_all(
-            "tr",
-            itemtype="http://schema.org/MusicRecording",
-            itemprop="track"
-        )
-
-    def fetch_name(self, soup, container):
-        return container.find("div", itemprop="name")
-
-    def fetch_track_length(self, soup, container):
-        return container.find("td", class_="time")
+    pass

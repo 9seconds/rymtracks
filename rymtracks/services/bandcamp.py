@@ -5,22 +5,22 @@ http://bandcamp.com
 """
 
 
-from . import Service, HTMLMixin
+from . import SchemaOrgService
 
 
 ##############################################################################
 
 
-class BandCamp(HTMLMixin, Service):
+class BandCamp(SchemaOrgService):
     """
-    Implementation of Service which is intended to parse Amazon MP3 Store.
+    Implementation of Service which is intended to parse BandCamp.
     """
 
     def fetch_tracks(self, soup):
-        return soup.select("#track_table div.title")
-
-    def fetch_name(self, soup, container):
-        return container.find("span", itemprop="name")
+        return soup.find_all(
+            itemtype="http://www.schema.org/MusicRecording",
+            itemprop="tracks"
+        )
 
     def fetch_track_length(self, soup, container):
         return container.find("span", class_="time")
