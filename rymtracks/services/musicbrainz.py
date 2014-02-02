@@ -31,19 +31,14 @@ class MusicBrainz(XMLMixin, Service):
         return soup.find_all("track")
 
     def fetch_name(self, soup, container):
-        recording = container.find("recording")
-        if not recording:
-            return ""
-        name = recording.title
-        if not name:
-            return ""
-        return name.get_text().strip()
+        return container.find("recording").title
 
     def fetch_track_length(self, soup, container):
-        time = container.find("length") or ""
+        time = container.find("length")
         if not time:
             return ""
-        time = int(time.get_text()) / 1000  # msecs -> secs
+        time = int(unicode(time)) / 1000  # msecs -> secs
+
         times = []
         while time:
             times.append(time % 60)

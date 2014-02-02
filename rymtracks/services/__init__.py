@@ -36,6 +36,79 @@ ParserResponse = namedtuple("ParserResponse", ["url", "data", "exception"])
 ##############################################################################
 
 
+class Water(object):
+    """
+    Just simple wrapper around BeautifulSoup to avoid "if"-mess.
+    """
+
+    __slots__ = "_soup",
+
+    # ------------------------------------------------------------------------
+
+    def __init__(self, soup):
+        self._soup = soup
+
+    def __nonzero__(self):
+        return bool(self._soup) if self._soup else False
+
+    def __instancecheck__(self, instance):
+        return isinstance(instance, getattr(self._soup, "__class__", None))
+
+    def __len__(self):
+        return len(self._soup) if self._soup else 0
+
+    def __getitem__(self, key):
+        return Water(self._soup[key]) if self._soup else self
+
+    def __setitem__(self, key, value):
+        if self._soup:
+            self._soup[key] = value
+
+    def __delitem__(self, key):
+        if self._soup:
+            del self._soup[key]
+
+    def __iter__(self):
+        return Water(iter(self._soup)) if self._soup else iter([])
+
+    def __contains__(self, key):
+        return key in self._soup if self._soup else False
+
+    def __getslice__(self, i, j):
+        return Water(self._soup[i:j]) if self._soup else Water([])
+
+    def __getattr__(self, item):
+        if hasattr(self._soup, item):
+            return Water(getattr(self._soup, item))
+        return self
+
+    def __call__(self, *args, **kwargs):
+        if callable(self._soup):
+            return Water(self._soup(*args, **kwargs))
+        return self
+
+    def __unicode__(self):
+        if self._soup:
+            return unicode(self._soup.get_text().strip())
+        else:
+            return ""
+
+    def __str__(self):
+        return unicode(self).encode("utf-8")
+
+    def __repr__(self):
+        return repr(self._soup)
+
+    def next(self):
+        """
+        To suppor iteration protocol.
+        """
+        return Water(next(self._soup))
+
+
+##############################################################################
+
+
 class HTMLMixin(object):
     """
     Mixin which asserts that response contains HTML and converts it into
@@ -47,7 +120,7 @@ class HTMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return BeautifulSoup(response.buffer, "html")
+        return Water(BeautifulSoup(response.buffer, "html"))
 
 
 class JSONMixin(object):
@@ -74,7 +147,7 @@ class XMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return BeautifulSoup(response.buffer, "xml")
+        return Water(BeautifulSoup(response.buffer, "xml"))
 
 
 ##############################################################################
@@ -221,7 +294,9 @@ class Service(ServiceFactoryMixin):
                     self.fetch_track_length(converted_response, container)
                 )
             )
-        return tuple(extracted_data)
+        return tuple(
+            (unicode(title), unicode(time)) for title, time in extracted_data
+        )
 
     # ------------------------------------------------------------------------
 

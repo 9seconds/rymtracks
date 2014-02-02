@@ -20,22 +20,11 @@ class ITunes(HTMLMixin, Service):
         tracks = soup.select(
             "div.track-list .tracklist-content-box > .tracklist-table"
         )
-        if tracks:
-            return tracks[0].select("tr.song")
-        return []
+        return tracks[0].find_all("tr", class_="song")
 
     def fetch_name(self, soup, container):
-        name = container.find("td", class_="name")
-        if not name:
-            return ""
-        name = name.find("span", class_="text")
-        return name.get_text().strip() if name else ""
+        return container.find("td", class_="name").find("span", class_="text")
 
     def fetch_track_length(self, soup, container):
-        time = container.find("td", class_="time")
-        if not time:
-            return ""
-        time = time.find("span", class_="text")
-        if not time:
-            return ""
-        return self.normalize_track_length(time.get_text().strip())
+        time = container.find("td", class_="time").find("span", class_="text")
+        return self.normalize_track_length(unicode(time))
