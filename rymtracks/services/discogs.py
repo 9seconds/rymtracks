@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains Service implementation of Discogs.
+http://discogs.com
+"""
 
 
 from . import Service, HTMLMixin
 
 
+##############################################################################
+
+
 class Discogs(HTMLMixin, Service):
+    """
+    Implementation of Service which is intended to parse Discogs.
+    """
 
     def fetch_tracks(self, soup):
         return soup.select("#playlist- tr")
