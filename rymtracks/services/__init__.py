@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from isodate import parse_duration, ISO8601Error
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.gen import coroutine, Return
+from six import PY3
 
 try:
     # https://pypi.python.org/pypi/ujson
@@ -95,10 +96,13 @@ class Water(object):
                 text = self._soup.get_text()
             return unicode(text.strip())
         else:
-            return ""
+            return u""
 
     def __str__(self):
-        return unicode(self).encode("utf-8")
+        if PY3:
+            return self.__unicode__()
+        else:
+            return self.__unicode__().encode("utf-8")
 
     def __repr__(self):
         return repr(self._soup)

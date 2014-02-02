@@ -40,7 +40,7 @@ setup(
                      "For more comprehensive documentation please visit "
                      "https://github.com/9seconds/rymtracks/",
     version="0.1.0",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     setup_requires=["nose>=1.0"],
     install_requires=REQUIREMENTS,
     author="Sergey Arkhipov",
@@ -60,7 +60,7 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking",
         "Topic :: Utilities"
     ],
-    test_suite='nose.collector',
+    test_suite="nose.collector",
     url="https://github.com/9seconds/rymtracks/",
     **EXTRAS
 )

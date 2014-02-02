@@ -47,14 +47,14 @@ def main():
             ".".join(str(num) for num in __version__)
         )
     )
-    urls = [url.decode("utf-8") for url in opts["<url>"]]
+    urls = [unicode(url) for url in opts["<url>"]]
     if opts["-l"]:
         for key in Service.network_locations():
             print key
         return
     if opts["<filename>"]:
         with open(opts["<filename>"], "r") as res:
-            urls.extend(url.decode("utf-8") for url in res.readlines())
+            urls.extend(unicode(url) for url in res.readlines())
     console(execute(urls))
 
 
