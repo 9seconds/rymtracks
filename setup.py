@@ -30,6 +30,7 @@ setup(
                 "copypasteable form for RateYourMusic.com",
     version=".".join(str(chunk) for chunk in __version__),
     packages=find_packages(),
+    setup_requires=['nose>=1.0'],
     install_requires=REQUIREMENTS,
     author="Sergey Arkhipov",
     author_email="serge@aerialsounds.org",
@@ -38,5 +39,6 @@ setup(
     maintainer_email="serge@aerialsounds.org",
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
     license="MIT",
+    test_suite='nose.collector',
     url="https://github.com/9seconds/rymtracks/"
 )
