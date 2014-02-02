@@ -4,7 +4,7 @@
 from . import Service, HTMLMixin
 
 
-class Discogs(Service, HTMLMixin):
+class Discogs(HTMLMixin, Service):
 
     def fetch_tracks(self, soup):
         return soup.select("#playlist- tr")
@@ -15,7 +15,7 @@ class Discogs(Service, HTMLMixin):
             return ""
         return name.get_text().strip()
 
-    def fetch_time(self, soup, container):
+    def fetch_track_length(self, soup, container):
         time = container.find("td", class_="track_duration").span
         if not time:
             return ""

@@ -4,7 +4,7 @@
 from . import Service, HTMLMixin
 
 
-class AllMusic(Service, HTMLMixin):
+class AllMusic(HTMLMixin, Service):
 
     def fetch_tracks(self, soup):
         return soup.find_all(
@@ -17,7 +17,7 @@ class AllMusic(Service, HTMLMixin):
         name = container.find("div", itemprop="name")
         return name.get_text().strip() if name else ""
 
-    def fetch_time(self, soup, container):
+    def fetch_track_length(self, soup, container):
         time = container.find("td", class_="time")
         if not time:
             return ""

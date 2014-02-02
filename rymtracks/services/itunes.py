@@ -4,7 +4,7 @@
 from . import Service, HTMLMixin
 
 
-class ITunes(Service, HTMLMixin):
+class ITunes(HTMLMixin, Service):
 
     def fetch_tracks(self, soup):
         tracks = soup.select(
@@ -21,7 +21,7 @@ class ITunes(Service, HTMLMixin):
         name = name.find("span", class_="text")
         return name.get_text().strip() if name else ""
 
-    def fetch_time(self, soup, container):
+    def fetch_track_length(self, soup, container):
         time = container.find("td", class_="time")
         if not time:
             return ""

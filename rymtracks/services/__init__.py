@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Core logic of RYMTracks. Actually there are some functions which uses
-Tornado IO loop and invokes parsers.
+Services package. This module contains definitions of useful mixins and
+main service class.
 """
 
 
-from collections import OrderedDict, namedtuple
-from itertools import chain
-from re import compile as regex_compile
+from collections import namedtuple
 from urlparse import urlparse
 
 from bs4 import BeautifulSoup
@@ -29,7 +27,7 @@ except ImportError:
 ##############################################################################
 
 
-__all__ = "Service"
+__all__ = "Service", "HTMLMixin", "JSONMixin", "XMLMixin"
 
 # Response structure for parsed results. exception is None if nothing happened
 ParserResponse = namedtuple("ParserResponse", ["url", "data", "exception"])
@@ -39,66 +37,153 @@ ParserResponse = namedtuple("ParserResponse", ["url", "data", "exception"])
 
 
 class HTMLMixin(object):
+    """
+    Mixin which asserts that response contains HTML and converts it into
+    Beautiful Soup instance.
+    """
 
     @staticmethod
     def convert_response(response):
+        """
+        Converter of response into Beautiful Soup instance.
+        """
         return BeautifulSoup(response.buffer, "html")
 
 
 class JSONMixin(object):
+    """
+    Mixin which asserts that response contains JSON and parses it.
+    """
 
     @staticmethod
     def convert_response(response):
+        """
+        Converts response into Python objects.
+        """
         return json_load(response.buffer)
 
 
 class XMLMixin(object):
+    """
+    Mixin which asserts that response contains XML and converts it into
+    Beautiful Soup instance.
+    """
 
     @staticmethod
     def convert_response(response):
+        """
+        Converter of response into Beautiful Soup instance.
+        """
         return BeautifulSoup(response.buffer, "xml")
 
 
 ##############################################################################
 
 
-class Service(object):
+class ServiceFactoryMixin(object):
+    """
+    Service mixin provides interface for registering Service instances,
+    factory method to produce instances according to URL etc.
+    """
 
-    _PARSERS = OrderedDict()
+    # A collection of parser classes binded to network locations.
+    _PARSERS = []
 
-    # Regular expression to remove first zeroes properly
-    ZERO_REGEXP = regex_compile(r"^0+(\d):")
-
-    @classmethod
-    def normalize_track_length(cls, length):
-        return cls.ZERO_REGEXP.sub(r"\1:", length)
+    # ------------------------------------------------------------------------
 
     @classmethod
     def register(cls, class_, *netlocs):
-        cls._PARSERS = OrderedDict(
-            chain(
-                cls._PARSERS.iteritems(),
-                ((loc, class_) for loc in netlocs)
-            )
-        )
+        """
+        Registers parser class to the list of network locations. Please
+        remember that lookup is done by longest name so if you want
+        """
+        cls._PARSERS += [(loc, class_) for loc in netlocs]
+        cls._PARSERS.sort(key=lambda el: len(el[0]), reverse=True)
 
     @classmethod
     def produce(cls, url, worker_pool):
+        """
+        Factory method to return appropriate Service instance for given URL.
+        """
         parsed_url = urlparse(url)
-        for loc in cls._PARSERS:
+        for loc, class_ in cls._PARSERS:
             if parsed_url.netloc.endswith(loc):
-                return cls._PARSERS[loc](url, worker_pool)
+                return class_(url, worker_pool)
 
     @classmethod
     def network_locations(cls):
-        return sorted(cls._PARSERS)
+        """
+        Returns the list of parseable network locations.
+        """
+        return sorted(loc for loc, class_ in cls._PARSERS)
+
+
+class Service(ServiceFactoryMixin):
+    """
+    Main service class contains almost all logic of service handling.
+
+    It fetches data by URL, parses it and generates ParserResponse result.
+
+    Main method to invoke is get_task which is suitable to run in Tornado
+    IOLoop. It is actually coroutine which raises result. It invokes internal
+    methods in following order:
+
+        1. generate_request
+        2. parse
+        3. convert_response
+        4. fetch_tracks
+        5. fetch_name
+        6. fetch_time
+
+    Please check documentation on methods to realise what do you need to
+    override to reach the goal.
+    """
+
+    USER_AGENT = (
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) "
+        "Gecko/20100101 Firefox/29.0"
+    )
+
+    # ------------------------------------------------------------------------
+
+    @classmethod
+    def normalize_track_length(cls, length):
+        """
+        Removes padded zeroes from time. In other words it converts length
+        into RYM-approved form: 00:13 -> 0:13, 00:03 -> 0:03
+        """
+        if not length:
+            return ""
+        chunks = [int(chunk) for chunk in length.split(":")]
+        while chunks[0] == 0:
+            chunks = chunks[1:]
+        if len(chunks) == 1:
+            chunks = [0] + chunks
+        chunks = [str(chunk) for chunk in chunks]
+        chunks[1:] = [chunk.zfill(2) for chunk in chunks[1:]]
+        return ":".join(chunks)
+
+    # ------------------------------------------------------------------------
 
     def __init__(self, url, worker_pool):
+        """
+        Constructor.
+
+        url is url to fetch and worker_pool is  concurrent.futures-compatible
+        worker pool to process fetched data.
+        """
         self.url = url
         self.worker_pool = worker_pool
 
+    # ------------------------------------------------------------------------
+
     @coroutine
     def get_task(self):
+        """
+        Main interface method user has to invoke. It returns Tornado future
+        which you have to yield to Tornado IOLoop to get the ParserResponse
+        result.
+        """
         raw_response = yield AsyncHTTPClient().fetch(self.generate_request())
         future = self.worker_pool.submit(self.parse, raw_response)
         if future.exception():
@@ -108,14 +193,20 @@ class Service(object):
         raise Return(response)
 
     def generate_request(self):
-        return HTTPRequest(
-            url=self.url,
-            use_gzip=True,
-            user_agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) "
-                       "Gecko/20100101 Firefox/29.0"
-        )
+        """
+        Generates request for Tornado AsyncHTTPClient. We have to use this
+        method because you might want to rewrite URL (check MusicBrainz)
+        and add custom User-Agent (hello Discogs!).
+        """
+        return HTTPRequest(self.url, use_gzip=True,user_agent=self.USER_AGENT)
 
     def parse(self, response):
+        """
+        The most common page parsing operation. First it converts result
+        into parsed object instance and after that travers it. Actually
+        it has to return some properly sorted tuple with pairs of name
+        and track length.
+        """
         converted_response = self.convert_response(response)
         tracks = self.fetch_tracks(converted_response)
         if not tracks:
@@ -125,21 +216,43 @@ class Service(object):
             extracted_data.append(
                 (
                     self.fetch_name(converted_response, container),
-                    self.fetch_time(converted_response, container)
+                    self.fetch_track_length(converted_response, container)
                 )
             )
         return tuple(extracted_data)
 
+    # ------------------------------------------------------------------------
+
+    @staticmethod
+    def convert_response(response):
+        """
+        Converts raw Tornado HTTPResponse into something meaningful.
+        """
+        return response.body
+
     def fetch_tracks(self, response):
+        """
+        Fetches track containers from converted response.
+        """
         raise NotImplementedError("Not implemented in base class")
 
     def fetch_name(self, response, container):
+        """
+        Fetches track name from track container.
+        """
         raise NotImplementedError("Not implemented in base class")
 
-    def fetch_time(self, response, container):
+    def fetch_track_length(self, response, container):
+        """
+        Fetches track length from track container.
+        """
         raise NotImplementedError("Not implemented in base class")
 
 
+##############################################################################
+
+
+# Registering services
 from .bandcamp import BandCamp
 from .discogs import Discogs
 from .rateyourmusic import RateYourMusic

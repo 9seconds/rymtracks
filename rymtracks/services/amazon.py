@@ -6,7 +6,7 @@ from . import Service, HTMLMixin
 from re import compile as regex_compile
 
 
-class Amazon(Service, HTMLMixin):
+class Amazon(HTMLMixin, Service):
 
     LEADING_NUMBER = regex_compile(r"^\d+\.\s*")
 
@@ -24,7 +24,7 @@ class Amazon(Service, HTMLMixin):
             return ""
         return self.LEADING_NUMBER.sub("", name.get_text().strip())
 
-    def fetch_time(self, soup, container):
+    def fetch_track_length(self, soup, container):
         time = container.find("td", class_="runtimeCol") or ""
         if not time:
             return ""

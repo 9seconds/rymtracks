@@ -9,7 +9,7 @@ from tornado.httpclient import HTTPRequest
 from tornado.httputil import url_concat
 
 
-class MusicBrainz(Service, XMLMixin):
+class MusicBrainz(XMLMixin, Service):
 
     def generate_request(self):
         url = urlparse(self.url).path.rstrip("/").rpartition("/")[-1]
@@ -35,7 +35,7 @@ class MusicBrainz(Service, XMLMixin):
             return ""
         return name.get_text().strip()
 
-    def fetch_time(self, soup, container):
+    def fetch_track_length(self, soup, container):
         time = container.find("length") or ""
         if not time:
             return ""

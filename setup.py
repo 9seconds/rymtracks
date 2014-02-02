@@ -13,12 +13,12 @@ from setuptools import setup, find_packages
 ##############################################################################
 
 
-requirements = []
-with open("requirements.txt", "rt") as resource:
+REQUIREMENTS = []
+with open("requirements.txt", "r") as resource:
     for line in resource.readlines():
         line = line.strip()
         if line and not line.startswith("#"):
-            requirements.append(line)
+            REQUIREMENTS.append(line)
 
 
 ##############################################################################
@@ -30,7 +30,7 @@ setup(
                 "copypasteable form for RateYourMusic.com",
     version=".".join(str(chunk) for chunk in __version__),
     packages=find_packages(),
-    install_requires=requirements,
+    install_requires=REQUIREMENTS,
     author="Sergey Arkhipov",
     author_email="serge@aerialsounds.org",
     maintainer="Sergey Arkhipov",
