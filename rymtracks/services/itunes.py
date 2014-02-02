@@ -26,4 +26,6 @@ class ITunes(Service, HTMLMixin):
         if not time:
             return ""
         time = time.find("span", class_="text")
-        return self.normalize_track_length(time.get_text().strip()) if time else ""
+        if not time:
+            return ""
+        return self.normalize_track_length(time.get_text().strip())

@@ -8,7 +8,9 @@ class AllMusic(Service, HTMLMixin):
 
     def fetch_tracks(self, soup):
         return soup.find_all(
-            "tr", itemtype="http://schema.org/MusicRecording", itemprop="track"
+            "tr",
+            itemtype="http://schema.org/MusicRecording",
+            itemprop="track"
         )
 
     def fetch_name(self, soup, container):
@@ -17,4 +19,6 @@ class AllMusic(Service, HTMLMixin):
 
     def fetch_time(self, soup, container):
         time = container.find("td", class_="time")
-        return self.normalize_track_length(time.get_text().strip()) if time else ""
+        if not time:
+            return ""
+        return self.normalize_track_length(time.get_text().strip())
