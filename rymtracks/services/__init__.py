@@ -145,9 +145,11 @@ from .discogs import Discogs
 from .rateyourmusic import RateYourMusic
 from .musicbrainz import MusicBrainz
 from .amazon import Amazon
+from .itunes import ITunes
 
 Service.register(BandCamp, "bandcamp.com")
 Service.register(Discogs, "discogs.com")
 Service.register(RateYourMusic, "rateyourmusic.com")
 Service.register(MusicBrainz, "musicbrainz.org")
 Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
+Service.register(ITunes, "itunes.apple.com")

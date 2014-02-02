@@ -16,7 +16,7 @@ class BandCamp(Service, HTMLMixin):
         return name.get_text().strip()
 
     def fetch_time(self, soup, container):
-        time = container.find("span", class_="time") or ""
+        time = container.find("span", class_="time")
         if not time:
             return ""
         return self.normalize_track_length(time.get_text().strip())
