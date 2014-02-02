@@ -24,7 +24,9 @@ from .formatters import console
 from .services import Service
 
 from sys import exit as sysexit
+
 from docopt import docopt
+from six import print_
 
 
 ##############################################################################
@@ -47,14 +49,14 @@ def main():
             ".".join(str(num) for num in __version__)
         )
     )
-    urls = [unicode(url) for url in opts["<url>"]]
+    urls = [str(url) for url in opts["<url>"]]
     if opts["-l"]:
         for key in Service.network_locations():
-            print key
+            print_(key)
         return
     if opts["<filename>"]:
         with open(opts["<filename>"], "r") as res:
-            urls.extend(unicode(url) for url in res.readlines())
+            urls.extend(str(url) for url in res.readlines())
     console(execute(urls))
 
 

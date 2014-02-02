@@ -4,6 +4,9 @@ Collection of formatters for RYMTracks.
 """
 
 
+from six import print_, text_type
+
+
 ##############################################################################
 
 
@@ -22,15 +25,15 @@ def console(results):
 
     for idx, result in enumerate(results):
         if result.exception:
-            title = result.url + u" ({}) ".format(unicode(result.exception))
-            print title.ljust(STDOUT_WIDTH, "=")
+            title = result.url + u" ({}) ".format(text_type(result.exception))
+            print_(title.ljust(STDOUT_WIDTH, "="))
             continue
         if len(results) > 1:
             title = result.url + u" "
-            print title.ljust(STDOUT_WIDTH, "=")
+            print_(title.ljust(STDOUT_WIDTH, "="))
         for track_idx, (title, length) in enumerate(result.data, start=1):
             track_idx = str(track_idx)
             title = title.replace("|", r"\|").title()
-            print track_idx + "|" + title + "|" + length
+            print_(track_idx + "|" + title + "|" + length)
         if idx < len(results) - 1:
-            print
+            print_("")

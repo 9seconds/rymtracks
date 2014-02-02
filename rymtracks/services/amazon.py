@@ -29,7 +29,7 @@ class Amazon(HTMLMixin, Service):
 
     def fetch_name(self, soup, container):
         name = container.find("td", class_="titleCol")
-        return self.LEADING_NUMBER.sub("", unicode(name))
+        return self.LEADING_NUMBER.sub("", str(name))
 
     def fetch_track_length(self, soup, container):
         return container.find("td", class_="runtimeCol")

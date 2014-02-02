@@ -20,9 +20,7 @@ with open("requirements.txt", "r") as resource:
             REQUIREMENTS.append(line)
 
 
-EXTRAS = {}
 if python_version >= (3,):
-    EXTRAS["use_2to3"] = True
     REQUIREMENTS = [
         req for req in REQUIREMENTS if not req.startswith("futures==")
     ]
@@ -62,5 +60,4 @@ setup(
     ],
     test_suite="nose.collector",
     url="https://github.com/9seconds/rymtracks/",
-    **EXTRAS
 )

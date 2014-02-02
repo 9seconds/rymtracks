@@ -5,9 +5,11 @@ Tests for BandCamp service.
 """
 
 
+from .mixins import FetchMixin
+
 from unittest import TestCase, main
 
-from .mixins import FetchMixin
+from six import u
 
 
 ##############################################################################
@@ -20,9 +22,9 @@ class BandCampCase (FetchMixin, TestCase):
 
     URL = "http://aidanbaker.bandcamp.com/album/cameo"
     DATA = (
-        (u'Cameo 1', '21:00'),
-        (u'Cameo Interlude', '8:46'),
-        (u'Cameo 2', '18:56')
+        (u("Cameo 1"), "21:00"),
+        (u("Cameo Interlude"), "8:46"),
+        (u("Cameo 2"), "18:56")
     )
 
 

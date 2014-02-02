@@ -5,14 +5,16 @@ main service class.
 """
 
 
+from __future__ import division
+
 from collections import namedtuple
-from urlparse import urlparse
 
 from bs4 import BeautifulSoup
 from isodate import parse_duration, ISO8601Error
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.gen import coroutine, Return
-from six import PY3
+from six import u, text_type, string_types, callable as six_callable, Iterator
+from six.moves.urllib.parse import urlparse
 
 try:
     # https://pypi.python.org/pypi/ujson
@@ -38,7 +40,7 @@ ParserResponse = namedtuple("ParserResponse", ["url", "data", "exception"])
 ##############################################################################
 
 
-class Water(object):
+class Water(Iterator):
     """
     Just simple wrapper around BeautifulSoup to avoid "if"-mess.
     """
@@ -85,32 +87,26 @@ class Water(object):
         return self
 
     def __call__(self, *args, **kwargs):
-        if callable(self._soup):
+        if six_callable(self._soup):
             return Water(self._soup(*args, **kwargs))
         return self
 
-    def __unicode__(self):
+    def __str__(self):
         if self._soup:
             text = self._soup
-            if not isinstance(self._soup, basestring):
+            if not isinstance(self._soup, string_types):
                 text = self._soup.get_text()
-            return unicode(text.strip())
+            return text_type(text.strip())
         else:
-            return u""
+            return text_type("")
 
-    def __str__(self):
-        if PY3:
-            return self.__unicode__()
-        else:
-            return self.__unicode__().encode("utf-8")
+    def __unicode__(self):
+        return self.__str__()
 
     def __repr__(self):
         return repr(self._soup)
 
-    def next(self):
-        """
-        To support iteration protocol.
-        """
+    def __next__(self):
         return Water(next(self._soup))
 
 
@@ -220,7 +216,7 @@ class Service(ServiceFactoryMixin):
     override to reach the goal.
     """
 
-    USER_AGENT = (
+    USER_AGENT = u(
         "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) "
         "Gecko/20100101 Firefox/29.0"
     )
@@ -253,7 +249,7 @@ class Service(ServiceFactoryMixin):
         seconds = abs(seconds)
         while seconds:
             parts.append(seconds % 60)
-            seconds /= 60
+            seconds //= 60
 
         if not parts:
             return ""
@@ -316,9 +312,9 @@ class Service(ServiceFactoryMixin):
             raise Exception("Empty list")
         extracted_data = []
         for container in tracks:
-            title = unicode(self.fetch_name(converted_response, container))
-            time = self.fetch_track_length(converted_response, container)
-            time = self.normalize_track_length(unicode(time))
+            title = str(self.fetch_name(converted_response, container))
+            time = str(self.fetch_track_length(converted_response, container))
+            time = self.normalize_track_length(time)
             extracted_data.append((title, time))
         return tuple(extracted_data)
 
@@ -329,7 +325,7 @@ class Service(ServiceFactoryMixin):
         """
         Converts raw Tornado HTTPResponse into something meaningful.
         """
-        return response.body
+        return u(response.body)
 
     def fetch_tracks(self, response):
         """
@@ -368,7 +364,7 @@ class SchemaOrgService(HTMLMixin, Service):
         return container.find(itemprop="name")
 
     def fetch_track_length(self, soup, container):
-        iso = unicode(container.find(itemprop="duration")["content"])
+        iso = str(container.find(itemprop="duration")["content"])
         try:
             return self.second_to_timestamp(parse_duration(iso).seconds)
         except ISO8601Error:

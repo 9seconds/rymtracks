@@ -5,9 +5,11 @@ Tests for Discogs service.
 """
 
 
+from .mixins import FetchMixin
+
 from unittest import TestCase, main
 
-from .mixins import FetchMixin
+from six import u
 
 
 ##############################################################################
@@ -20,18 +22,18 @@ class DiscogsCase (FetchMixin, TestCase):
 
     URL = "http://www.discogs.com/Radiohead-The-Bends/release/368116"
     DATA = (
-        (u'Planet Telex', '4:18'),
-        (u'The Bends', '4:06'),
-        (u'High And Dry', '4:18'),
-        (u'Fake Plastic Trees', '4:50'),
-        (u'Bones', '3:09'),
-        (u'(Nice Dream)', '3:53'),
-        (u'Just', '3:55'),
-        (u'My Iron Lung', '4:36'),
-        (u'Bullet Proof..I Wish I Was', '3:29'),
-        (u'Black Star', '4:07'),
-        (u'Sulk', '3:43'),
-        (u'Street Spirit (Fade Out)', '4:12')
+        (u("Planet Telex"), "4:18"),
+        (u("The Bends"), "4:06"),
+        (u("High And Dry"), "4:18"),
+        (u("Fake Plastic Trees"), "4:50"),
+        (u("Bones"), "3:09"),
+        (u("(Nice Dream)"), "3:53"),
+        (u("Just"), "3:55"),
+        (u("My Iron Lung"), "4:36"),
+        (u("Bullet Proof..I Wish I Was"), "3:29"),
+        (u("Black Star"), "4:07"),
+        (u("Sulk"), "3:43"),
+        (u("Street Spirit (Fade Out)"), "4:12")
     )
 
 

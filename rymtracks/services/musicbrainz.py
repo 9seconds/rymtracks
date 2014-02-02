@@ -7,8 +7,7 @@ http://musicbrainz.org
 
 from . import Service, XMLMixin
 
-from urlparse import urlparse
-
+from six.moves.urllib.parse import urlparse
 from tornado.httpclient import HTTPRequest
 from tornado.httputil import url_concat
 
@@ -37,4 +36,5 @@ class MusicBrainz(XMLMixin, Service):
         time = container.find("length")
         if not time:
             return ""
-        return self.second_to_timestamp(int(unicode(time)) / 1000)
+        # str is a must here because we have to convert Water to text first.
+        return self.second_to_timestamp(int(str(time)) // 1000)
