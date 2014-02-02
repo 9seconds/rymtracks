@@ -7,6 +7,7 @@ Setup script for RYMTracks.
 
 from rymtracks import __version__
 
+from sys import version_info as python_version
 from setuptools import setup, find_packages
 
 
@@ -21,6 +22,11 @@ with open("requirements.txt", "r") as resource:
             REQUIREMENTS.append(line)
 
 
+EXTRAS = {}
+if python_version >= (3,):
+    EXTRAS["2to3"] = True
+
+
 ##############################################################################
 
 
@@ -30,7 +36,7 @@ setup(
                 "copypasteable form for RateYourMusic.com",
     version=".".join(str(chunk) for chunk in __version__),
     packages=find_packages(),
-    setup_requires=['nose>=1.0'],
+    setup_requires=["nose>=1.0"],
     install_requires=REQUIREMENTS,
     author="Sergey Arkhipov",
     author_email="serge@aerialsounds.org",
@@ -40,5 +46,6 @@ setup(
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
     license="MIT",
     test_suite='nose.collector',
-    url="https://github.com/9seconds/rymtracks/"
+    url="https://github.com/9seconds/rymtracks/",
+    **EXTRAS
 )

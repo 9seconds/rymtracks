@@ -105,7 +105,7 @@ class Water(object):
 
     def next(self):
         """
-        To suppor iteration protocol.
+        To support iteration protocol.
         """
         return Water(next(self._soup))
 
