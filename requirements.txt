@@ -6,6 +6,7 @@ tornado==3.2
 # Scrapped pages handling
 beautifulsoup4==4.3.2
 lxml==3.3.0
+isodate==0.4.9
 futures==2.1.6
 
 # Misc utils

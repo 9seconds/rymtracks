@@ -9,6 +9,7 @@ from collections import namedtuple
 from urlparse import urlparse
 
 from bs4 import BeautifulSoup
+from isodate import parse_duration, ISO8601Error
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.gen import coroutine, Return
 
@@ -219,8 +220,8 @@ class Service(ServiceFactoryMixin):
 
     # ------------------------------------------------------------------------
 
-    @classmethod
-    def normalize_track_length(cls, length):
+    @staticmethod
+    def normalize_track_length(length):
         """
         Removes padded zeroes from time. In other words it converts length
         into RYM-approved form: 00:13 -> 0:13, 00:03 -> 0:03
@@ -235,6 +236,26 @@ class Service(ServiceFactoryMixin):
         chunks = [str(chunk) for chunk in chunks]
         chunks[1:] = [chunk.zfill(2) for chunk in chunks[1:]]
         return ":".join(chunks)
+
+    @staticmethod
+    def second_to_timestamp(seconds):
+        """
+        Converts seconds into text timestamp in RYM-approved format.
+        """
+        parts = []
+        seconds = abs(seconds)
+        while seconds:
+            parts.append(seconds % 60)
+            seconds /= 60
+
+        if not parts:
+            return ""
+        if len(parts) == 1:
+            parts[0:0] = [0]
+
+        parts = [str(part) for part in reversed(parts)]
+        parts[1:] = [part.zfill(2) for part in parts[1:]]
+        return ":".join(parts)
 
     # ------------------------------------------------------------------------
 
@@ -320,6 +341,31 @@ class Service(ServiceFactoryMixin):
         Fetches track length from track container.
         """
         raise NotImplementedError("Not implemented in base class")
+
+
+class SchemaOrgService(HTMLMixin, Service):
+    """
+    Base service implementation to parse services which supports
+    MusicRecording schema.
+
+    http://schema.org/MusicRecording
+    """
+
+    def fetch_tracks(self, soup):
+        return soup.find_all(
+            itemtype="http://schema.org/MusicRecording",
+            itemprop="track"
+        )
+
+    def fetch_name(self, soup, container):
+        raise container.find(itemprop="name")
+
+    def fetch_track_length(self, soup, container):
+        iso = unicode(container.find(itemprop="duration")["content"])
+        try:
+            return self.second_to_timestamp(parse_duration(iso).seconds)
+        except ISO8601Error:
+            return ""
 
 
 ##############################################################################

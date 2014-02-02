@@ -37,13 +37,4 @@ class MusicBrainz(XMLMixin, Service):
         time = container.find("length")
         if not time:
             return ""
-        time = int(unicode(time)) / 1000  # msecs -> secs
-
-        times = []
-        while time:
-            times.append(time % 60)
-            time /= 60
-        times = list(str(ms) for ms in reversed(times))
-        times[1:] = [ms.zfill(2) for ms in times[1:]]
-
-        return ":".join(times)
+        return self.second_to_timestamp(int(unicode(time)) / 1000)
