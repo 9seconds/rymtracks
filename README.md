@@ -1,6 +1,8 @@
 rymtracks
 =========
 
+[![Build Status](https://travis-ci.org/9seconds/rymtracks.png?branch=master)](https://travis-ci.org/9seconds/rymtracks)
+
 RYMTracks is small helper for all those folks who actively uses and contributes for [RateYourMusic](http://rateyourmusic.com).
 
 Unfortunately [sharifi](http://rateyourmusic.com/~sharifi) still has this unconvenient track list editor you have to fill by yourself. For big albums you have to copy/paste every song title and print timestamps in correct form. Moreover, you even have to put track numbers (just a minute, it is 2014 ongoing) manually.
