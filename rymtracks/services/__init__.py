@@ -198,7 +198,9 @@ class Service(ServiceFactoryMixin):
         method because you might want to rewrite URL (check MusicBrainz)
         and add custom User-Agent (hello Discogs!).
         """
-        return HTTPRequest(self.url, use_gzip=True,user_agent=self.USER_AGENT)
+        return HTTPRequest(
+            self.url, use_gzip=True, user_agent=self.USER_AGENT
+        )
 
     def parse(self, response):
         """

@@ -10,6 +10,9 @@ from . import Service, HTMLMixin
 from re import compile as regex_compile
 
 
+##############################################################################
+
+
 class Amazon(HTMLMixin, Service):
     """
     Implementation of Service which is intended to parse Amazon MP3 Store.
