@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains Service implementation of iTunes.
+http://itunes.apple.com
+"""
 
 
 from . import Service, HTMLMixin
 
 
+##############################################################################
+
+
 class ITunes(HTMLMixin, Service):
+    """
+    Implementation of Service which is intended to parse itunes.
+    """
 
     def fetch_tracks(self, soup):
         tracks = soup.select(
