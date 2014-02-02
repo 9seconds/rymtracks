@@ -13,7 +13,7 @@ from . import Service, HTMLMixin
 
 class ITunes(HTMLMixin, Service):
     """
-    Implementation of Service which is intended to parse itunes.
+    Implementation of Service which is intended to parse iTunes.
     """
 
     def fetch_tracks(self, soup):

@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains Service implementation of MusicBrainz.
+http://musicbrainz.org
+"""
 
 
 from . import Service, XMLMixin
@@ -9,19 +13,19 @@ from tornado.httpclient import HTTPRequest
 from tornado.httputil import url_concat
 
 
+##############################################################################
+
+
 class MusicBrainz(XMLMixin, Service):
+    """
+    Implementation of Service which is intended to parse MusicBrainz.
+    """
 
     def generate_request(self):
         url = urlparse(self.url).path.rstrip("/").rpartition("/")[-1]
         url = "http://musicbrainz.org/ws/2/release/" + url
         url = url_concat(url, dict(inc="recordings"))
-
-        return HTTPRequest(
-            url=url,
-            use_gzip=True,
-            user_agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0) "
-                       "Gecko/20100101 Firefox/29.0"
-        )
+        return HTTPRequest(url, use_gzip=True, user_agent=self.USER_AGENT)
 
     def fetch_tracks(self, soup):
         return soup.find_all("track")
