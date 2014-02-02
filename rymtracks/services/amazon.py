@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains Service implementation of Amazon MP3 store.
+http://amazon.com
+"""
 
 
 from . import Service, HTMLMixin
@@ -7,8 +11,14 @@ from re import compile as regex_compile
 
 
 class Amazon(HTMLMixin, Service):
+    """
+    Implementation of Service which is intended to parse Amazon MP3 Store.
+    """
 
+    # This regexp is intended to remove leading track numbers from titles.
     LEADING_NUMBER = regex_compile(r"^\d+\.\s*")
+
+    # ------------------------------------------------------------------------
 
     def fetch_tracks(self, soup):
         tables = soup.select("#albumTrackList > table")

@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains Service implementation of AllMusic Guide service.
+http://allmusic.com
+"""
 
 
 from . import Service, HTMLMixin
 
 
+##############################################################################
+
+
 class AllMusic(HTMLMixin, Service):
+    """
+    Implementation of Service which is intended to parse AMG.
+    """
 
     def fetch_tracks(self, soup):
         return soup.find_all(
