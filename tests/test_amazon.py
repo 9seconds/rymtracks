@@ -7,7 +7,7 @@ Tests for Amazon service.
 
 from unittest import TestCase, main
 
-from mixins import FetchMixin
+from .mixins import FetchMixin
 
 
 ##############################################################################
