@@ -1,7 +1,7 @@
 rymtracks
 =========
 
-|Build Status|
+|Build Status| |PyPi Package|
 
 RYMTracks is small helper for all those folks who actively uses and
 contributes for `RateYourMusic <http://rateyourmusic.com>`__.
@@ -101,3 +101,6 @@ Cheers.
 
 .. |Build Status| image:: https://travis-ci.org/9seconds/rymtracks.png?branch=master
    :target: https://travis-ci.org/9seconds/rymtracks
+
+.. |PyPi Package| image:: https://badge.fury.io/py/RYMTracks.png
+   :target: http://badge.fury.io/py/RYMTracks
