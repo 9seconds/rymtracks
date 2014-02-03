@@ -377,18 +377,25 @@ class SchemaOrgService(HTMLMixin, Service):
 
 
 # Registering services
+from .allmusic import AllMusic
+from .amazon import Amazon
 from .bandcamp import BandCamp
 from .discogs import Discogs
-from .rateyourmusic import RateYourMusic
-from .musicbrainz import MusicBrainz
-from .amazon import Amazon
 from .itunes import ITunes
-from .allmusic import AllMusic
+from .lastfm import LastFM
+from .musicbrainz import MusicBrainz
+from .rateyourmusic import RateYourMusic
 
+Service.register(AllMusic, "allmusic.com")
+Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
 Service.register(BandCamp, "bandcamp.com")
 Service.register(Discogs, "discogs.com")
-Service.register(RateYourMusic, "rateyourmusic.com")
-Service.register(MusicBrainz, "musicbrainz.org")
-Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
 Service.register(ITunes, "itunes.apple.com")
-Service.register(AllMusic, "allmusic.com")
+Service.register(
+    LastFM,
+    "last.fm", "lastfm.ru", "lastfm.de", "lastfm.es", "lastfm.fr",
+    "lastfm.it", "lastfm.jp", "lastfm.pl", "lasfm.com.br", "lastfm.se",
+    "lastfm.com.tr", "cn.last.fm"
+)
+Service.register(MusicBrainz, "musicbrainz.org")
+Service.register(RateYourMusic, "rateyourmusic.com")

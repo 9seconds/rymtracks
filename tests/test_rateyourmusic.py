@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Tests for RateyourMusic service.
+Tests for RateYourMusic service.
 """
 
 
@@ -17,7 +17,7 @@ from six import u
 
 class RateYourMusicCase (FetchMixin, TestCase):
     """
-    Amazon test case.
+    RateYourMusic test case.
     """
 
     URL = "https://rateyourmusic.com/release/album/linkin_park/meteora/"
