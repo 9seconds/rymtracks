@@ -379,6 +379,7 @@ class SchemaOrgService(HTMLMixin, Service):
 # Registering services
 from .allmusic import AllMusic
 from .amazon import Amazon
+from .archiveorg import ArchiveOrg
 from .bandcamp import BandCamp
 from .boomkat import Boomkat
 from .discogs import Discogs
@@ -392,6 +393,7 @@ from .sevendigital import SevenDigital
 
 Service.register(AllMusic, "allmusic.com")
 Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
+Service.register(ArchiveOrg, "archive.org")
 Service.register(BandCamp, "bandcamp.com")
 Service.register(Boomkat, "boomkat.com")
 Service.register(Discogs, "discogs.com")
