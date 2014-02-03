@@ -26,7 +26,7 @@ from .services import Service
 from sys import exit as sysexit
 
 from docopt import docopt
-from six import print_
+from six import print_, text_type
 
 
 ##############################################################################
@@ -49,14 +49,14 @@ def main():
             ".".join(str(num) for num in __version__)
         )
     )
-    urls = [str(url) for url in opts["<url>"]]
+    urls = [text_type(url) for url in opts["<url>"]]
     if opts["-l"]:
         for key in Service.network_locations():
             print_(key)
         return
     if opts["<filename>"]:
         with open(opts["<filename>"], "r") as res:
-            urls.extend(str(url) for url in res.readlines())
+            urls.extend(text_type(url) for url in res.readlines())
     console(execute(urls))
 
 

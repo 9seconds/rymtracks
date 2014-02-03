@@ -13,7 +13,8 @@ from bs4 import BeautifulSoup
 from isodate import parse_duration, ISO8601Error
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.gen import coroutine, Return
-from six import u, text_type, string_types, callable as six_callable, Iterator
+from six import PY2, u, text_type, string_types, \
+    callable as six_callable, Iterator
 from six.moves.urllib.parse import urlparse
 
 try:
@@ -100,8 +101,9 @@ class Water(Iterator):
         else:
             return text_type("")
 
-    def __unicode__(self):
-        return self.__str__()
+    if PY2:
+        def __unicode__(self):
+            return self.__str__()
 
     def __repr__(self):
         return repr(self._soup)
@@ -236,7 +238,7 @@ class Service(ServiceFactoryMixin):
             chunks = chunks[1:]
         if len(chunks) == 1:
             chunks = [0] + chunks
-        chunks = [str(chunk) for chunk in chunks]
+        chunks = [text_type(chunk) for chunk in chunks]
         chunks[1:] = [chunk.zfill(2) for chunk in chunks[1:]]
         return ":".join(chunks)
 
@@ -256,7 +258,7 @@ class Service(ServiceFactoryMixin):
         if len(parts) == 1:
             parts[0:0] = [0]
 
-        parts = [str(part) for part in reversed(parts)]
+        parts = [text_type(part) for part in reversed(parts)]
         parts[1:] = [part.zfill(2) for part in parts[1:]]
         return ":".join(parts)
 
@@ -312,8 +314,8 @@ class Service(ServiceFactoryMixin):
             raise Exception("Empty list")
         extracted_data = []
         for container in tracks:
-            title = str(self.fetch_name(converted_response, container))
-            time = str(self.fetch_track_length(converted_response, container))
+            title = text_type(self.fetch_name(converted_response, container))
+            time = text_type(self.fetch_track_length(converted_response, container))
             time = self.normalize_track_length(time)
             extracted_data.append((title, time))
         return tuple(extracted_data)
@@ -364,7 +366,7 @@ class SchemaOrgService(HTMLMixin, Service):
         return container.find(itemprop="name")
 
     def fetch_track_length(self, soup, container):
-        iso = str(container.find(itemprop="duration")["content"])
+        iso = text_type(container.find(itemprop="duration")["content"])
         try:
             return self.second_to_timestamp(parse_duration(iso).seconds)
         except ISO8601Error:
