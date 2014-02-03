@@ -383,6 +383,7 @@ from .bandcamp import BandCamp
 from .boomkat import Boomkat
 from .discogs import Discogs
 from .itunes import ITunes
+from .jamendo import Jamendo
 from .lastfm import LastFM
 from .musicbrainz import MusicBrainz
 from .rateyourmusic import RateYourMusic
@@ -394,6 +395,7 @@ Service.register(BandCamp, "bandcamp.com")
 Service.register(Boomkat, "boomkat.com")
 Service.register(Discogs, "discogs.com")
 Service.register(ITunes, "itunes.apple.com")
+Service.register(Jamendo, "jamendo.com")
 Service.register(
     LastFM,
     "last.fm", "lastfm.ru", "lastfm.de", "lastfm.es", "lastfm.fr",
