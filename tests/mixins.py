@@ -20,6 +20,6 @@ class FetchMixin (object):
         result = results[0]
 
         self.assertIsNone(result.exception)
-        self.assertEquals(self.DATA, result.data)
+        self.assertEqual(self.DATA, result.data)
 
 

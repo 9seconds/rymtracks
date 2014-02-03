@@ -15,6 +15,7 @@ from setuptools import setup, find_packages
 REQUIREMENTS = [
     "tornado==3.2",
     "beautifulsoup4==4.3.2",
+    "lxml==3.3.0",
     "isodate==0.4.9",
     "docopt==0.6.1",
     "nose==1.3.0",

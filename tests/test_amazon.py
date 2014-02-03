@@ -5,7 +5,10 @@ Tests for Amazon service.
 """
 
 
-from .mixins import FetchMixin
+if __name__ == "__main__":
+    from mixins import FetchMixin
+else:
+    from .mixins import FetchMixin
 
 from six import u
 
