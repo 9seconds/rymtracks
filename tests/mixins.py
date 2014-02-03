@@ -21,5 +21,3 @@ class FetchMixin (object):
 
         self.assertIsNone(result.exception)
         self.assertEqual(self.DATA, result.data)
-
-

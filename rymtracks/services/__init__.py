@@ -386,6 +386,7 @@ from .itunes import ITunes
 from .lastfm import LastFM
 from .musicbrainz import MusicBrainz
 from .rateyourmusic import RateYourMusic
+from .sevendigital import SevenDigital
 
 Service.register(AllMusic, "allmusic.com")
 Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
@@ -401,3 +402,4 @@ Service.register(
 )
 Service.register(MusicBrainz, "musicbrainz.org")
 Service.register(RateYourMusic, "rateyourmusic.com")
+Service.register(SevenDigital, "7digital.com")
