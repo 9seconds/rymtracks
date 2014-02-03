@@ -36,7 +36,7 @@ setup(
     description="RYMTracks scraps given URLs and presents tracklists into "
                 "copypasteable form for RateYourMusic.com",
     long_description=LONG_DESCRIPTION,
-    version="0.1.1",
+    version="0.1.2",
     packages=find_packages(exclude=["tests"]),
     setup_requires=["nose>=1.0"],
     install_requires=REQUIREMENTS,
