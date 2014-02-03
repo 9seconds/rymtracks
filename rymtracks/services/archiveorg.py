@@ -47,4 +47,6 @@ class ArchiveOrg(JSONMixin, Service):
             length = self.normalize_track_length(length)
             tracks[track] = (title, length)
 
+        if not tracks:
+            raise Exception("Empty list")
         return tuple(data for track, data in sorted(tracks.iteritems()))
