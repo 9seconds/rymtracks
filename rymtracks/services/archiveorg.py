@@ -7,7 +7,7 @@ http://archive.org
 
 from . import Service, JSONMixin
 
-from six import text_type
+from six import text_type, iteritems
 from tornado.httpclient import HTTPRequest
 
 
@@ -49,4 +49,4 @@ class ArchiveOrg(JSONMixin, Service):
 
         if not tracks:
             raise Exception("Empty list")
-        return tuple(data for track, data in sorted(tracks.iteritems()))
+        return tuple(data for track, data in sorted(iteritems(tracks)))

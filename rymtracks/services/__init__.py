@@ -18,15 +18,11 @@ from six import PY2, u, text_type, string_types, \
 from six.moves.urllib.parse import urlparse
 
 try:
-    # https://pypi.python.org/pypi/ujson
-    from ujson import load as json_load
+    # http://simplejson.readthedocs.org. Since it is wide-spread I am sure
+    # you have it
+    from simplejson import loads as json_loads
 except ImportError:
-    try:
-        # http://simplejson.readthedocs.org. Since it is wide-spread I am sure
-        # you have it
-        from simplejson import load as json_load
-    except ImportError:
-        from json import load as json_load
+    from json import loads as json_loads
 
 
 ##############################################################################
@@ -139,7 +135,10 @@ class JSONMixin(object):
         """
         Converts response into Python objects.
         """
-        return json_load(response.buffer)
+        raw_string = u(response.body)
+        if not PY2:
+            raw_string = raw_string.decode("utf-8")
+        return json_loads(raw_string)
 
 
 class XMLMixin(object):
