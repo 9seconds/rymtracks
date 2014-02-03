@@ -380,6 +380,7 @@ class SchemaOrgService(HTMLMixin, Service):
 from .allmusic import AllMusic
 from .amazon import Amazon
 from .bandcamp import BandCamp
+from .boomkat import Boomkat
 from .discogs import Discogs
 from .itunes import ITunes
 from .lastfm import LastFM
@@ -389,6 +390,7 @@ from .rateyourmusic import RateYourMusic
 Service.register(AllMusic, "allmusic.com")
 Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
 Service.register(BandCamp, "bandcamp.com")
+Service.register(Boomkat, "boomkat.com")
 Service.register(Discogs, "discogs.com")
 Service.register(ITunes, "itunes.apple.com")
 Service.register(
