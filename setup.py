@@ -12,22 +12,19 @@ from setuptools import setup, find_packages
 ##############################################################################
 
 
-REQUIREMENTS = []
-with open("requirements.txt", "r") as resource:
-    for line in resource.readlines():
-        line = line.strip()
-        if line and not line.startswith("#"):
-            REQUIREMENTS.append(line)
-
+REQUIREMENTS = [
+    "tornado==3.2",
+    "beautifulsoup4==4.3.2",
+    "isodate==0.4.9",
+    "docopt==0.6.1",
+    "nose==1.3.0",
+    "six==1.5.2"
+]
+if python_version >= (3,):
+    REQUIREMENTS.append("futures==2.1.6")
 
 with open("README.rst", "r") as resource:
     LONG_DESCRIPTION = resource.read()
-
-
-if python_version >= (3,):
-    REQUIREMENTS = [
-        req for req in REQUIREMENTS if not req.startswith("futures==")
-    ]
 
 
 ##############################################################################
@@ -38,7 +35,7 @@ setup(
     description="RYMTracks scraps given URLs and presents tracklists into "
                 "copypasteable form for RateYourMusic.com",
     long_description=LONG_DESCRIPTION,
-    version="0.1.0",
+    version="0.1.1",
     packages=find_packages(exclude=["tests"]),
     setup_requires=["nose>=1.0"],
     install_requires=REQUIREMENTS,
