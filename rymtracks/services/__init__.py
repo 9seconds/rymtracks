@@ -382,6 +382,7 @@ from .amazon import Amazon
 from .bandcamp import BandCamp
 from .boomkat import Boomkat
 from .discogs import Discogs
+from .freemusicarchive import FreeMusicArchive
 from .itunes import ITunes
 from .jamendo import Jamendo
 from .lastfm import LastFM
@@ -394,6 +395,10 @@ Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
 Service.register(BandCamp, "bandcamp.com")
 Service.register(Boomkat, "boomkat.com")
 Service.register(Discogs, "discogs.com")
+Service.register(
+    FreeMusicArchive,
+    "freemusicarchive.org", "freemusicarchive.com"
+)
 Service.register(ITunes, "itunes.apple.com")
 Service.register(Jamendo, "jamendo.com")
 Service.register(
