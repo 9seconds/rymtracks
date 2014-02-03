@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class SevenDigitalCase (FetchMixin, TestCase):
+class SevenDigitalCase(FetchMixin, TestCase):
     """
     7Digital test case.
     """

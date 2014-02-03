@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class LastFMCase (FetchMixin, TestCase):
+class LastFMCase(FetchMixin, TestCase):
     """
     LastFM test case.
     """

@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class FreeMusicArchiveCase (FetchMixin, TestCase):
+class FreeMusicArchiveCase(FetchMixin, TestCase):
     """
     FreeMusicArchive test case.
     """

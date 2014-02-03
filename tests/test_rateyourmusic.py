@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class RateYourMusicCase (FetchMixin, TestCase):
+class RateYourMusicCase(FetchMixin, TestCase):
     """
     RateYourMusic test case.
     """

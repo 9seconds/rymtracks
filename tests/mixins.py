@@ -10,7 +10,7 @@ from rymtracks.core import execute
 ##############################################################################
 
 
-class FetchMixin (object):
+class FetchMixin(object):
     """
     Implements simple fetch test case
     """

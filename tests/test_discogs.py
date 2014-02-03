@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class DiscogsCase (FetchMixin, TestCase):
+class DiscogsCase(FetchMixin, TestCase):
     """
     Amazon test case.
     """

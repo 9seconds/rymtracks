@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class BandCampCase (FetchMixin, TestCase):
+class BandCampCase(FetchMixin, TestCase):
     """
     BandCamp test case.
     """

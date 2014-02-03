@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class JamendoCase (FetchMixin, TestCase):
+class JamendoCase(FetchMixin, TestCase):
     """
     Jamendo test case.
     """

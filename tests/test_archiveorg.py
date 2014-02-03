@@ -18,7 +18,7 @@ from six import u
 ##############################################################################
 
 
-class ArchiveOrgCase (FetchMixin, TestCase):
+class ArchiveOrgCase(FetchMixin, TestCase):
     """
     Archive.org test case.
     """

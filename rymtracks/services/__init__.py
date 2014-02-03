@@ -315,8 +315,8 @@ class Service(ServiceFactoryMixin):
         extracted_data = []
         for container in tracks:
             title = text_type(self.fetch_name(converted_response, container))
-            time = text_type(self.fetch_track_length(converted_response, container))
-            time = self.normalize_track_length(time)
+            time = self.fetch_track_length(converted_response, container)
+            time = self.normalize_track_length(text_type(time))
             extracted_data.append((title, time))
         return tuple(extracted_data)
 
@@ -388,6 +388,7 @@ from .itunes import ITunes
 from .jamendo import Jamendo
 from .lastfm import LastFM
 from .musicbrainz import MusicBrainz
+from .progarchives import ProgArchives
 from .rateyourmusic import RateYourMusic
 from .sevendigital import SevenDigital
 
@@ -410,5 +411,6 @@ Service.register(
     "lastfm.com.tr", "cn.last.fm"
 )
 Service.register(MusicBrainz, "musicbrainz.org")
+Service.register(ProgArchives, "progarchives.com")
 Service.register(RateYourMusic, "rateyourmusic.com")
 Service.register(SevenDigital, "7digital.com")

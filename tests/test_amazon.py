@@ -18,7 +18,7 @@ from unittest import TestCase, main
 ##############################################################################
 
 
-class AmazonCase (FetchMixin, TestCase):
+class AmazonCase(FetchMixin, TestCase):
     """
     Amazon test case.
     """
