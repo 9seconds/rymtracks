@@ -19,7 +19,8 @@ REQUIREMENTS = [
     "isodate==0.4.9",
     "docopt==0.6.1",
     "nose==1.3.0",
-    "six==1.5.2"
+    "six==1.5.2",
+    "nltk==2.0.4"
 ]
 if python_version >= (3,):
     REQUIREMENTS.append("futures==2.1.6")
@@ -37,16 +38,18 @@ setup(
                 "copypasteable form for RateYourMusic.com",
     long_description=LONG_DESCRIPTION,
     version="0.1.2",
-    packages=find_packages(exclude=["tests"]),
-    setup_requires=["nose>=1.0"],
-    install_requires=REQUIREMENTS,
     author="Sergey Arkhipov",
+    license="MIT",
     author_email="serge@aerialsounds.org",
     maintainer="Sergey Arkhipov",
-    zip_safe=False,
     maintainer_email="serge@aerialsounds.org",
+    url="https://github.com/9seconds/rymtracks/",
+    install_requires=REQUIREMENTS,
+    tests_require=["nose==1.3.0"],
+    packages=find_packages(exclude=["tests"]),
+    include_package_data=True,
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
-    license="MIT",
+    test_suite="nose.collector",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
@@ -58,6 +61,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking",
         "Topic :: Utilities"
     ],
-    test_suite="nose.collector",
-    url="https://github.com/9seconds/rymtracks/",
+    zip_safe=False
 )
