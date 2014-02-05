@@ -3,10 +3,11 @@
 """
 Setup script for RYMTracks.
 """
-
+from distutils.command.install_data import install_data
 
 from sys import version_info as python_version
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
+from setuptools.command.install import install
 
 
 ##############################################################################
@@ -20,13 +21,49 @@ REQUIREMENTS = [
     "docopt==0.6.1",
     "nose==1.3.0",
     "six==1.5.2",
-    "nltk==2.0.4"
+    "nltk==2.0.4",
+    "numpy==1.8.0"
 ]
-if python_version >= (3,):
+if python_version < (3,):
     REQUIREMENTS.append("futures==2.1.6")
 
 with open("README.rst", "r") as resource:
     LONG_DESCRIPTION = resource.read()
+
+
+##############################################################################
+
+
+class UpdateNLTKData(install_data):
+    """
+    Updater of NLTK data
+    """
+
+    def run(self):
+        from os import makedirs
+        from os.path import expanduser, exists, join
+        from shutil import rmtree
+        from nltk import download
+
+        home_directory = join(expanduser("~"), ".rymtracks")
+        nltk_data_directory = join(home_directory, "nltk")
+        if not exists(home_directory):
+            makedirs(home_directory)
+        rmtree(nltk_data_directory, True)
+        makedirs(nltk_data_directory)
+
+        for data in ("stopwords", "punkt", "maxent_treebank_pos_tagger"):
+            download(data, download_dir=nltk_data_directory)
+
+
+class Install(install):
+    """
+    Custom procedure which updates NLTK data on install
+    """
+
+    def do_egg_install(self):
+        install.do_egg_install(self)
+        self.run_command("update_nltk_data")
 
 
 ##############################################################################
@@ -46,6 +83,7 @@ setup(
     url="https://github.com/9seconds/rymtracks/",
     install_requires=REQUIREMENTS,
     tests_require=["nose==1.3.0"],
+    setup_requires=["nltk==2.0.4"],
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
@@ -61,5 +99,6 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking",
         "Topic :: Utilities"
     ],
+    cmdclass={"install": Install, "update_nltk_data": UpdateNLTKData},
     zip_safe=False
 )
