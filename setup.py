@@ -111,6 +111,6 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking",
         "Topic :: Utilities"
     ],
-    cmdclass={"install": Install, "update_nltk_data": UpdateNLTKData},
-    zip_safe=False
+    zip_safe=False,
+    **EXTRAS
 )
