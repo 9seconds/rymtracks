@@ -3,6 +3,5 @@
 
 def capitalize(text):
     if "/" in text:
-        return " / ".join(capitalize(sent) for sent in text.split("/"))
-    else:
-        return text.title()
+        return text.replace("/", " / ")
+    return text
