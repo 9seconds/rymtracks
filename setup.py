@@ -3,32 +3,12 @@
 """
 Setup script for RYMTracks.
 """
+
+
 from distutils.command.install_data import install_data
-
 from sys import version_info as python_version
-from setuptools import setup, find_packages, Command
+from setuptools import setup, find_packages
 from setuptools.command.install import install
-
-
-##############################################################################
-
-
-REQUIREMENTS = [
-    "tornado==3.2",
-    "beautifulsoup4==4.3.2",
-    "lxml==3.3.0",
-    "isodate==0.4.9",
-    "docopt==0.6.1",
-    "nose==1.3.0",
-    "six==1.5.2",
-    "nltk==2.0.4",
-    "numpy==1.8.0"
-]
-if python_version < (3,):
-    REQUIREMENTS.append("futures==2.1.6")
-
-with open("README.rst", "r") as resource:
-    LONG_DESCRIPTION = resource.read()
 
 
 ##############################################################################
@@ -69,6 +49,39 @@ class Install(install):
 ##############################################################################
 
 
+REQUIREMENTS = [
+    "tornado==3.2",
+    "beautifulsoup4==4.3.2",
+    "lxml==3.3.0",
+    "isodate==0.4.9",
+    "docopt==0.6.1",
+    "nose==1.3.0",
+    "six==1.5.2",
+    "nltk==2.0.4",
+    "numpy==1.8.0"
+]
+
+EXTRAS = {}
+
+
+##############################################################################
+
+
+if python_version < (3,):
+    REQUIREMENTS.append("futures==2.1.6")
+    EXTRAS["cmdclass"] = {
+        "install": Install,
+        "update_nltk_data": UpdateNLTKData
+    }
+    EXTRAS["setup_requires"] = ["nltk==2.0.4"]
+
+with open("README.rst", "r") as resource:
+    LONG_DESCRIPTION = resource.read()
+
+
+##############################################################################
+
+
 setup(
     name="RYMTracks",
     description="RYMTracks scraps given URLs and presents tracklists into "
@@ -83,7 +96,6 @@ setup(
     url="https://github.com/9seconds/rymtracks/",
     install_requires=REQUIREMENTS,
     tests_require=["nose==1.3.0"],
-    setup_requires=["nltk==2.0.4"],
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
