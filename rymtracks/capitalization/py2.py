@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+This module contains capitalization definitions for RYM in Python 2.
+"""
 
 
 from .. import NLTK_PATH
@@ -15,6 +18,7 @@ from nltk.corpus import stopwords
 ###############################################################################
 
 
+# This small hack (?) helps NLTK to find its files.
 NLTK_DATA.path[0:0] = [NLTK_PATH]
 
 
@@ -35,8 +39,14 @@ CYRILLIC_ALPHABET = frozenset(CYRILLIC_ALPHABET + CYRILLIC_ALPHABET.lower())
 
 
 class Capitalization(object):
+    """
+    Base capitalization framework class. Inherit to specify the logic.
+    """
 
     def capitalize_sentence(self, sentence):
+        """
+        Capitalizes particular sentence.
+        """
         sentence = sentence.replace("'n'", " 'n' ")
         if "/" in sentence:
             tokens = sentence.split("/")
@@ -46,6 +56,9 @@ class Capitalization(object):
         return " ".join(chunk.capitalize() for chunk in sentence.split())
 
     def capitalize(self, text):
+        """
+        Capitalizes whole text.
+        """
         text = text_type(text)
         return " ".join(
             self.capitalize_sentence(sent) for sent in sent_tokenize(text)
@@ -53,7 +66,13 @@ class Capitalization(object):
 
 
 class EnglishCapitalization(Capitalization):
+    """
+    Implementation of capitalization for English language.
+    """
 
+    # POS tags detected by NLTK for the words have to be lowercased.
+    # Checkout a list here:
+    # http://ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
     POS_TAG_LOWER_CASE = {"CC", "IN", "TO"}
     WORD_LOWER_CASE = {"vs.", "v.", "etc", "the"}
 
@@ -91,8 +110,14 @@ class EnglishCapitalization(Capitalization):
 
 
 class WorldCapitalization(Capitalization):
+    """
+    Base class for capitalization for non-english languages.
+    """
 
     def apply_specifics(self, sentence):
+        """
+        Applies language specifics on a sentence.
+        """
         return sentence
 
     def capitalize_sentence(self, sentence):
@@ -103,12 +128,18 @@ class WorldCapitalization(Capitalization):
 
 
 class RussianCapitalization(WorldCapitalization):
+    """
+    Implementation of Russian capitalization.
+    """
 
     def apply_specifics(self, sentence):
         return sentence.capitalize()
 
 
 class SpanishCapitalization(WorldCapitalization):
+    """
+    Implementation for Spanish capitalization.
+    """
 
     PREPOSITIONS = (
         "bajo",
@@ -241,6 +272,9 @@ class SpanishCapitalization(WorldCapitalization):
 
 
 def capitalize(text):
+    """
+    Text capitalizator for Python 2.
+    """
     if set(text) & set(CYRILLIC_ALPHABET):
         language = "russian"
     else:

@@ -53,11 +53,18 @@ NLTK_PATH = path_join(HOME_PATH, "nltk")
 
 
 def print_service_locations():
+    """
+    Just prints recognizible network locations.
+    """
     for key in Service.network_locations():
         print_(key)
 
 
 def update_languages():
+    """
+    Updates NLTK data in your local home. Does nothing on Python 3 because
+    NLTK does not support it yet.
+    """
     if not PY2:
         return
 
