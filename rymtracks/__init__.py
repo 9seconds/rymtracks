@@ -27,44 +27,29 @@ from .formatters import console
 from .services import Service
 
 from os import makedirs
-from os.path import expanduser, exists, join
+from os.path import exists, expanduser, join as path_join
 from shutil import rmtree
 from sys import exit as sysexit
 
 from docopt import docopt
-from nltk import download, data as NLTK_DATA
-from six import print_, text_type
+from six import print_, text_type, PY2
 
 
-##############################################################################
+###############################################################################
 
 
 __version__ = 0, 1, 2
 __all__ = 'main',
 
 
-##############################################################################
+###############################################################################
 
 
-DATA_HOME = join(expanduser("~"), ".rymtracks")
-NLTK_DATA_HOME = join(DATA_HOME, "nltk")
-NLTK_DATA.path[0:0] = [NLTK_DATA_HOME]
+HOME_PATH = path_join(expanduser("~"), ".rymtracks")
+NLTK_PATH = path_join(HOME_PATH, "nltk")
 
 
-##############################################################################
-
-
-from nltk import sent_tokenize
-try:
-    sent_tokenize("")
-except LookupError:
-    sysexit(
-        "No language datafiles found. Please run "
-        "'rymtracks --update-languages'."
-    )
-
-
-##############################################################################
+###############################################################################
 
 
 def print_service_locations():
@@ -73,13 +58,18 @@ def print_service_locations():
 
 
 def update_languages():
-    if not exists(DATA_HOME):
-        makedirs(DATA_HOME)
-    rmtree(NLTK_DATA_HOME, True)
-    makedirs(NLTK_DATA_HOME)
+    if not PY2:
+        return
+
+    from nltk import download
+
+    if not exists(HOME_PATH):
+        makedirs(HOME_PATH)
+    rmtree(NLTK_PATH, True)
+    makedirs(NLTK_PATH)
 
     for data in ("stopwords", "punkt", "maxent_treebank_pos_tagger"):
-        download(data, download_dir=NLTK_DATA_HOME)
+        download(data, download_dir=NLTK_PATH)
 
 
 def main():
