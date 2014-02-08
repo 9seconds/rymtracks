@@ -33,7 +33,7 @@ def console(results):
             print_(title.ljust(STDOUT_WIDTH, "="))
         for track_idx, (title, length) in enumerate(result.data, start=1):
             track_idx = str(track_idx)
-            title = title.replace("|", r"\|").title()
+            title = title.replace("|", r"\|")
             print_(track_idx + "|" + title + "|" + length)
         if idx < len(results) - 1:
             print_("")

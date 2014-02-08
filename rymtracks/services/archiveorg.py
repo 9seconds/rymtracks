@@ -6,6 +6,7 @@ http://archive.org
 
 
 from . import Service, JSONMixin
+from ..capitalization import capitalize
 
 from six import text_type, iteritems
 from tornado.httpclient import HTTPRequest
@@ -39,7 +40,7 @@ class ArchiveOrg(JSONMixin, Service):
                 continue
 
             track = int(file_["track"])
-            title = text_type(file_["title"])
+            title = capitalize(file_["title"])
             length = text_type(file_.get("length", ""))
             if length and ":" not in length:
                 length = int(float(length))

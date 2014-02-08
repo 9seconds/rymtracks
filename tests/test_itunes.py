@@ -29,7 +29,7 @@ class ITunesCase(FetchMixin, TestCase):
         (u("Owl Path"), "5:36"),
         (u("Jackdaw Talk"), "3:42"),
         (u("September 13"), "4:52"),
-        (u("Theory  Practice"), "3:36"),
+        (u("Theory Practice"), "3:36"),
         (u("Love Forever Krist"), "3:46"),
         (u("King Pony"), "2:41"),
         (u("September 23"), "6:11"),

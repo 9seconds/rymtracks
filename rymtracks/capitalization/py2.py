@@ -8,9 +8,8 @@ from .. import NLTK_PATH
 from ..utils import text_type
 
 from itertools import chain
-from re import compile as regex_compile
 
-from nltk import wordpunct_tokenize, sent_tokenize, pos_tag, \
+from nltk import word_tokenize, wordpunct_tokenize, sent_tokenize, pos_tag, \
     data as NLTK_DATA
 from nltk.corpus import stopwords
 
@@ -76,10 +75,8 @@ class EnglishCapitalization(Capitalization):
     POS_TAG_LOWER_CASE = {"CC", "IN", "TO"}
     WORD_LOWER_CASE = {"vs.", "v.", "etc", "the"}
 
-    FIX_NT = regex_compile(r"\s+n't")
-
     def capitalize_sentence(self, sentence):
-        words = wordpunct_tokenize(sentence)
+        words = word_tokenize(sentence)
         tagged_words = pos_tag([word.lower() for word in words])
 
         truecased_words = []
@@ -99,12 +96,11 @@ class EnglishCapitalization(Capitalization):
             truecased_words.append(word)
 
         for idx in (0, -1):
-            word = truecased_words[idx][0]
+            word = truecased_words[idx]
             if word != word.upper():
-                truecased_words[idx][0] = word.capitalize()
+                truecased_words[idx] = word.capitalize()
 
         coerced_sentence = " ".join(truecased_words)
-        coerced_sentence = self.FIX_NT.sub("n't", coerced_sentence)
 
         return coerced_sentence
 
@@ -265,7 +261,19 @@ class SpanishCapitalization(WorldCapitalization):
         first, rest = tokens[0], " ".join(tokens[1:])
         for prep in chain(self.SUBSTITUTIONS):
             rest = rest.replace(prep.capitalize(), prep)
-        sentence = " ".join([first, rest])
+        return " ".join([first, rest])
+
+
+class DutchCapitalization(EnglishCapitalization):
+    """
+    Implementation of RYM capitalization for Dutch.
+    """
+
+    def capitalize_sentence(self, sentence):
+        sentence = super(DutchCapitalization, self).capitalize_sentence(
+            sentence
+        )
+        return sentence.replace("Ij", "IJ")
 
 
 ##############################################################################
@@ -275,7 +283,8 @@ def capitalize(text):
     """
     Text capitalizator for Python 2.
     """
-    if set(text) & set(CYRILLIC_ALPHABET):
+    text = text_type(text)
+    if set(text) & CYRILLIC_ALPHABET:
         language = "russian"
     else:
         words = set(wordpunct_tokenize(text_type(text).lower()))
@@ -289,4 +298,6 @@ def capitalize(text):
         class_ = RussianCapitalization
     elif language == "spanish":
         class_ = SpanishCapitalization
+    elif language == "dutch":
+        class_ = DutchCapitalization
     return class_().capitalize(text)

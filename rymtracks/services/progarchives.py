@@ -6,6 +6,7 @@ http://progarchives.com
 
 
 from . import Service, HTMLMixin
+from ..capitalization import capitalize
 
 from re import compile as regex_compile, VERBOSE as regex_VERBOSE
 
@@ -50,7 +51,7 @@ class ProgArchives(HTMLMixin, Service):
             if not matcher:
                 continue
             matches = matcher.groupdict()
-            title = matches["title"]
+            title = capitalize(matches["title"])
             length = self.normalize_track_length(matches["length"] or "")
             extracted_data.append((title, length))
 

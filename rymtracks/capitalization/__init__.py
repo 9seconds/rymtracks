@@ -18,9 +18,9 @@ tries to reduce your pain.
 
 
 from re import compile as regex_compile, IGNORECASE as re_IGNORECASE, \
-    VERBOSE as re_VERBOSE
+    VERBOSE as re_VERBOSE, UNICODE as re_UNICODE
 
-from six import PY2
+from six import PY2, text_type
 
 
 ###############################################################################
@@ -41,8 +41,15 @@ else:
 ###############################################################################
 
 
-FIX_PUNCTUATION = regex_compile(r"\s+(?=[\.,'!?:;])")
+FIX_PUNCTUATION = regex_compile(r"\s+(?=[\.,!?:;])")
+SEPARATORS = regex_compile(r"([\[\]\(\)'\"\{\}\.,?!:;])")
+FIX_LEFT_QUOTES = regex_compile(r"(?<=['\"])\s+")
+FIX_RIGHT_QUOTES = regex_compile(r"(?<!\w|\d)\s+(?=['\"])", re_UNICODE)
+FIX_LEFT_BRACES = regex_compile(r"(?<=[\[\(\}])\s+")
+FIX_RIGHT_BRACES = regex_compile(r"\s+(?=[\]\}\)])")
 FIX_SPACES = regex_compile(r"\s{2,}")
+FIX_QUOTES = regex_compile(r"'{2,}")
+FIX_SHORT_FORMS = regex_compile(r"\s+'(re|s|t)\b", re_IGNORECASE)
 ROMAN_NUMERALS = regex_compile(
     r"""
         \b
@@ -66,14 +73,30 @@ def fix_roman_numeral(matcher):
     return matcher.group(0).upper()
 
 
+def fix_short_form(matcher):
+    return "'" + matcher.group(1).lower()
+
+
 def capitalize(text):
     """
     Text capitalizator. Give it a text, it will try to capitalize it according
     to the rules of the language and returns somewhat properly capitalized
     result.
     """
+    text = text_type(text)
+    text = SEPARATORS.sub(r" \1 ", text)
+
     text = specific_capitalize(text)
-    text = FIX_PUNCTUATION.sub("", text)
+
+    text = FIX_LEFT_QUOTES.sub("", text)
+    text = FIX_RIGHT_QUOTES.sub("", text)
+    text = FIX_LEFT_BRACES.sub("", text)
+    text = FIX_RIGHT_BRACES.sub("", text)
     text = FIX_SPACES.sub("", text)
+    text = FIX_QUOTES.sub('"', text)
+    text = FIX_PUNCTUATION.sub("", text)
+
+    text = FIX_SHORT_FORMS.sub(fix_short_form, text)
     text = ROMAN_NUMERALS.sub(fix_roman_numeral, text)
+
     return text.strip()

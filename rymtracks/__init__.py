@@ -22,10 +22,6 @@ Options:
 """
 
 
-from .core import execute
-from .formatters import console
-from .services import Service
-
 from os import makedirs
 from os.path import exists, expanduser, join as path_join
 from shutil import rmtree
@@ -47,6 +43,14 @@ __all__ = 'main',
 
 HOME_PATH = path_join(expanduser("~"), ".rymtracks")
 NLTK_PATH = path_join(HOME_PATH, "nltk")
+
+
+###############################################################################
+
+
+from .core import execute
+from .formatters import console
+from .services import Service
 
 
 ###############################################################################

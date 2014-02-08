@@ -25,7 +25,7 @@ class JamendoCase(FetchMixin, TestCase):
 
     URL = "http://www.jamendo.com/en/list/a128698/sue-o-de-dahlia"
     DATA = (
-        (u("Entre Tu y Yo Track"), "4:03"),
+        (u("Entre Tu Y Yo Track"), "4:03"),
         (u("Creo En Ti"), "3:18"),
         (u("De Que Vale"), "3:33"),
         (u("Inyecci\xf3n De Vida"), "3:45"),
@@ -34,7 +34,7 @@ class JamendoCase(FetchMixin, TestCase):
         (u("Una Oportunidad"), "3:50"),
         (u("Encanto Natural"), "3:42"),
         (u("Marioneta Acustico"), "3:39"),
-        (u("Entre Tu y Yo Acustico"), "3:29")
+        (u("Entre Tu Y Yo Acustico"), "3:29")
     )
 
 

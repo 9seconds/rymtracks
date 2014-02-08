@@ -7,6 +7,8 @@ main service class.
 
 from __future__ import division
 
+from ..capitalization import capitalize
+
 from collections import namedtuple
 
 from bs4 import BeautifulSoup
@@ -313,7 +315,8 @@ class Service(ServiceFactoryMixin):
             raise Exception("Empty list")
         extracted_data = []
         for container in tracks:
-            title = text_type(self.fetch_name(converted_response, container))
+            title = self.fetch_name(converted_response, container)
+            title = capitalize(title)
             time = self.fetch_track_length(converted_response, container)
             time = self.normalize_track_length(text_type(time))
             extracted_data.append((title, time))
