@@ -17,7 +17,8 @@ tries to reduce your pain.
 """
 
 
-from re import compile as regex_compile
+from re import compile as regex_compile, IGNORECASE as re_IGNORECASE, \
+    VERBOSE as re_VERBOSE
 
 from six import PY2
 
@@ -42,9 +43,27 @@ else:
 
 FIX_PUNCTUATION = regex_compile(r"\s+(?=[\.,'!?:;])")
 FIX_SPACES = regex_compile(r"\s{2,}")
+ROMAN_NUMERALS = regex_compile(
+    r"""
+        \b
+            M{0,4}
+            (CM|CD|D?C{0,3})
+            (XC|XL|L?X{0,3})
+            (IX|IV|V?I{0,3})
+        \b
+    """,
+    re_VERBOSE | re_IGNORECASE
+)
 
 
 ###############################################################################
+
+
+def fix_roman_numeral(matcher):
+    """
+    Uppercases roman numerals.
+    """
+    return matcher.group(0).upper()
 
 
 def capitalize(text):
@@ -56,4 +75,5 @@ def capitalize(text):
     text = specific_capitalize(text)
     text = FIX_PUNCTUATION.sub("", text)
     text = FIX_SPACES.sub("", text)
+    text = ROMAN_NUMERALS.sub(fix_roman_numeral, text)
     return text.strip()
