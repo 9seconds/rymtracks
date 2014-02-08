@@ -97,7 +97,6 @@ setup(
     install_requires=REQUIREMENTS,
     tests_require=["nose==1.3.0"],
     packages=find_packages(exclude=["tests"]),
-    include_package_data=True,
     entry_points=dict(console_scripts=["rymtracks = rymtracks:main"]),
     test_suite="nose.collector",
     classifiers=[
