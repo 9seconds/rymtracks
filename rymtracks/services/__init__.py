@@ -383,6 +383,7 @@ from .allmusic import AllMusic
 from .amazon import Amazon
 from .archiveorg import ArchiveOrg
 from .bandcamp import BandCamp
+from .beatport import BeatPort
 from .boomkat import Boomkat
 from .discogs import Discogs
 from .freemusicarchive import FreeMusicArchive
@@ -399,6 +400,7 @@ Service.register(AllMusic, "allmusic.com")
 Service.register(Amazon, "amazon.com", "amazon.co.uk", "amazon.co.jp")
 Service.register(ArchiveOrg, "archive.org")
 Service.register(BandCamp, "bandcamp.com")
+Service.register(BeatPort, "beatport.com")
 Service.register(Boomkat, "boomkat.com")
 Service.register(Discogs, "discogs.com")
 Service.register(

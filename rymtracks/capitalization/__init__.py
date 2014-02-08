@@ -98,5 +98,6 @@ def capitalize(text):
 
     text = FIX_SHORT_FORMS.sub(fix_short_form, text)
     text = ROMAN_NUMERALS.sub(fix_roman_numeral, text)
+    text = text.replace(" MIX", " Mix")
 
     return text.strip()
