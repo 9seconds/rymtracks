@@ -87,7 +87,7 @@ setup(
     description="RYMTracks scraps given URLs and presents tracklists into "
                 "copypasteable form for RateYourMusic.com",
     long_description=LONG_DESCRIPTION,
-    version="0.1.2",
+    version="0.1.3",
     author="Sergey Arkhipov",
     license="MIT",
     author_email="serge@aerialsounds.org",
