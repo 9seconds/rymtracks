@@ -388,6 +388,7 @@ from .discogs import Discogs
 from .freemusicarchive import FreeMusicArchive
 from .itunes import ITunes
 from .jamendo import Jamendo
+from .junodownload import JunoDownload
 from .lastfm import LastFM
 from .musicbrainz import MusicBrainz
 from .progarchives import ProgArchives
@@ -406,6 +407,7 @@ Service.register(
 )
 Service.register(ITunes, "itunes.apple.com")
 Service.register(Jamendo, "jamendo.com")
+Service.register(JunoDownload, "junodownload.com")
 Service.register(
     LastFM,
     "last.fm", "lastfm.ru", "lastfm.de", "lastfm.es", "lastfm.fr",

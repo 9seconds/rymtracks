@@ -86,7 +86,7 @@ def capitalize(text):
     text = text_type(text)
     text = SEPARATORS.sub(r" \1 ", text)
 
-    text = specific_capitalize(text)
+    text = " / ".join(specific_capitalize(part) for part in text.split("/"))
 
     text = FIX_LEFT_QUOTES.sub("", text)
     text = FIX_RIGHT_QUOTES.sub("", text)

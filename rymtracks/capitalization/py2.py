@@ -46,12 +46,6 @@ class Capitalization(object):
         """
         Capitalizes particular sentence.
         """
-        sentence = sentence.replace("'n'", " 'n' ")
-        if "/" in sentence:
-            tokens = sentence.split("/")
-            tokens = [self.capitalize_sentence(tkn) for tkn in tokens]
-            sentence = " / ".join(tokens)
-        sentence = sentence.replace(" 'n' ", "'n'")
         return " ".join(chunk.capitalize() for chunk in sentence.split())
 
     def capitalize(self, text):

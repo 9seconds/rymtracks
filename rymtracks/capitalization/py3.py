@@ -12,6 +12,4 @@ def capitalize(text):
     Python 3 primitive stub version of text capitalization. Actually it does
     nothing serious since NLTK is not ported to Python 3 yet.
     """
-    if "/" in text:
-        return text.replace("/", " / ")
     return text
