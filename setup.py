@@ -50,7 +50,6 @@ class Install(install):
 
 
 REQUIREMENTS = [
-    "tornado==3.2",
     "beautifulsoup4==4.3.2",
     "lxml==3.3.0",
     "isodate==0.4.9",
@@ -58,7 +57,8 @@ REQUIREMENTS = [
     "nose==1.3.0",
     "six==1.5.2",
     "nltk==2.0.4",
-    "numpy==1.8.0"
+    "numpy==1.8.0",
+    "requests==2.2.1"
 ]
 
 EXTRAS = {}

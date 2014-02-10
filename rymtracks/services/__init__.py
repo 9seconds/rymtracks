@@ -13,18 +13,10 @@ from collections import namedtuple
 
 from bs4 import BeautifulSoup
 from isodate import parse_duration, ISO8601Error
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from tornado.gen import coroutine, Return
+from requests import Session, Request
 from six import PY2, u, text_type, string_types, \
     callable as six_callable, Iterator
 from six.moves.urllib.parse import urlparse
-
-try:
-    # http://simplejson.readthedocs.org. Since it is wide-spread I am sure
-    # you have it
-    from simplejson import loads as json_loads
-except ImportError:
-    from json import loads as json_loads
 
 
 ##############################################################################
@@ -124,7 +116,7 @@ class HTMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return Water(BeautifulSoup(response.buffer, "html"))
+        return Water(BeautifulSoup(response.text, "html"))
 
 
 class JSONMixin(object):
@@ -137,10 +129,7 @@ class JSONMixin(object):
         """
         Converts response into Python objects.
         """
-        raw_string = u(response.body)
-        if not PY2:
-            raw_string = raw_string.decode("utf-8")
-        return json_loads(raw_string)
+        return response.json()
 
 
 class XMLMixin(object):
@@ -154,7 +143,7 @@ class XMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return Water(BeautifulSoup(response.buffer, "xml"))
+        return Water(BeautifulSoup(response.text, "xml"))
 
 
 ##############################################################################
@@ -181,14 +170,14 @@ class ServiceFactoryMixin(object):
         cls._PARSERS.sort(key=lambda el: len(el[0]), reverse=True)
 
     @classmethod
-    def produce(cls, url, worker_pool):
+    def produce(cls, url):
         """
         Factory method to return appropriate Service instance for given URL.
         """
         parsed_url = urlparse(url)
         for loc, class_ in cls._PARSERS:
             if parsed_url.netloc.endswith(loc):
-                return class_(url, worker_pool)
+                return class_(url)
 
     @classmethod
     def network_locations(cls):
@@ -203,10 +192,7 @@ class Service(ServiceFactoryMixin):
     Main service class contains almost all logic of service handling.
 
     It fetches data by URL, parses it and generates ParserResponse result.
-
-    Main method to invoke is get_task which is suitable to run in Tornado
-    IOLoop. It is actually coroutine which raises result. It invokes internal
-    methods in following order:
+    It invokes internal methods in following order:
 
         1. generate_request
         2. parse
@@ -265,7 +251,7 @@ class Service(ServiceFactoryMixin):
 
     # ------------------------------------------------------------------------
 
-    def __init__(self, url, worker_pool):
+    def __init__(self, url):
         """
         Constructor.
 
@@ -273,24 +259,27 @@ class Service(ServiceFactoryMixin):
         worker pool to process fetched data.
         """
         self.url = url
-        self.worker_pool = worker_pool
+        self.session = Session()
 
     # ------------------------------------------------------------------------
 
-    @coroutine
-    def get_task(self):
+    def get_result(self):
         """
-        Main interface method user has to invoke. It returns Tornado future
-        which you have to yield to Tornado IOLoop to get the ParserResponse
-        result.
+        Main interface method user has to invoke.
         """
-        raw_response = yield AsyncHTTPClient().fetch(self.generate_request())
-        future = self.worker_pool.submit(self.parse, raw_response)
-        if future.exception():
-            response = ParserResponse(self.url, [], future.exception())
-        else:
-            response = ParserResponse(self.url, future.result(), None)
-        raise Return(response)
+        response = self.session.send(
+            self.generate_request().prepare(),
+            timeout=60.0,
+            stream=False,
+            verify=False
+        )
+        response.raise_for_status()
+
+        try:
+            parsed_result = self.parse(response)
+        except Exception as exc:
+            return ParserResponse(self.url, [], exc)
+        return ParserResponse(self.url, parsed_result, None)
 
     def generate_request(self):
         """
@@ -298,8 +287,11 @@ class Service(ServiceFactoryMixin):
         method because you might want to rewrite URL (check MusicBrainz)
         and add custom User-Agent (hello Discogs!).
         """
-        return HTTPRequest(
-            self.url, use_gzip=True, user_agent=self.USER_AGENT
+        return Request(
+            "GET", self.url,
+            headers={
+                "User-Agent": self.USER_AGENT,
+            }
         )
 
     def parse(self, response):
@@ -327,9 +319,9 @@ class Service(ServiceFactoryMixin):
     @staticmethod
     def convert_response(response):
         """
-        Converts raw Tornado HTTPResponse into something meaningful.
+        Converts raw requests' HTTPResponse into something meaningful.
         """
-        return u(response.body)
+        return response.text
 
     def fetch_tracks(self, response):
         """

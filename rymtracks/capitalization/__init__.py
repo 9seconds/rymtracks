@@ -50,7 +50,7 @@ FIX_RIGHT_BRACES = regex_compile(r"\s+(?=[\]\}\)])")
 FIX_SPACES = regex_compile(r"\s{2,}")
 FIX_QUOTES = regex_compile(r"'{2,}")
 FIX_SHORT_FORMS = regex_compile(r"\s+'(re|s|t)\b", re_IGNORECASE)
-ROMAN_NUMERALS = regex_compile(
+FIX_ROMAN_NUMERALS = regex_compile(
     r"""
         \b
             M{0,4}
@@ -68,12 +68,16 @@ ROMAN_NUMERALS = regex_compile(
 
 def fix_roman_numeral(matcher):
     """
-    Uppercases roman numerals.
+    Uppercases roman numerals. Has to be used with regexp FIX_ROMAN_NUMERALS.
     """
     return matcher.group(0).upper()
 
 
 def fix_short_form(matcher):
+    """
+    Fixes short forms like "don 't" or "nobody 's". Has to be used with
+    regexp FIX_SHORT_FORMS.
+    """
     return "'" + matcher.group(1).lower()
 
 
@@ -97,7 +101,7 @@ def capitalize(text):
     text = FIX_PUNCTUATION.sub("", text)
 
     text = FIX_SHORT_FORMS.sub(fix_short_form, text)
-    text = ROMAN_NUMERALS.sub(fix_roman_numeral, text)
+    text = FIX_ROMAN_NUMERALS.sub(fix_roman_numeral, text)
     text = text.replace(" MIX", " Mix")
 
     return text.strip()

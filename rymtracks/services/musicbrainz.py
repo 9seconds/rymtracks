@@ -7,10 +7,9 @@ http://musicbrainz.org
 
 from . import Service, XMLMixin
 
+from requests import Request
 from six import text_type
 from six.moves.urllib.parse import urlparse
-from tornado.httpclient import HTTPRequest
-from tornado.httputil import url_concat
 
 
 ##############################################################################
@@ -24,8 +23,15 @@ class MusicBrainz(XMLMixin, Service):
     def generate_request(self):
         url = urlparse(self.url).path.rstrip("/").rpartition("/")[-1]
         url = "http://musicbrainz.org/ws/2/release/" + url
-        url = url_concat(url, dict(inc="recordings"))
-        return HTTPRequest(url, use_gzip=True, user_agent=self.USER_AGENT)
+        return Request(
+            'GET', url,
+            params={
+                "inc": "recordings"
+            },
+            headers={
+                "User-Agent": self.USER_AGENT
+            }
+        )
 
     def fetch_tracks(self, soup):
         return soup.find_all("track")

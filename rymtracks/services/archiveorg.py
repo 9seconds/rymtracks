@@ -8,8 +8,8 @@ http://archive.org
 from . import Service, JSONMixin
 from ..capitalization import capitalize
 
+from requests import Request
 from six import text_type, iteritems
-from tornado.httpclient import HTTPRequest
 
 
 ##############################################################################
@@ -22,10 +22,12 @@ class ArchiveOrg(JSONMixin, Service):
 
     def generate_request(self):
         resource = self.url.rstrip("/").rpartition("/")[-1]
-        return HTTPRequest(
-            "http://archive.org/metadata/" + resource + "/files/",
-            use_gzip=True,
-            headers=dict(Accept="application/json")
+        return Request(
+            "GET", "http://archive.org/metadata/" + resource + "/files/",
+            headers={
+                "User-Agent": self.USER_AGENT,
+                "Accept": "application/json"
+            }
         )
 
     def parse(self, response):
