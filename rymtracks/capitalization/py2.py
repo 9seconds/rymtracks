@@ -67,7 +67,7 @@ class EnglishCapitalization(Capitalization):
     # Checkout a list here:
     # http://ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
     POS_TAG_LOWER_CASE = {"CC", "IN", "TO"}
-    WORD_LOWER_CASE = {"vs.", "v.", "etc", "the"}
+    WORD_LOWER_CASE = {"vs.", "v.", "etc", "the", "a", "an", "of"}
 
     def capitalize_sentence(self, sentence):
         words = word_tokenize(sentence)
