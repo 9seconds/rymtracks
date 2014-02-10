@@ -26,7 +26,7 @@ class AmazonCase(FetchMixin, TestCase):
     URL = "http://www.amazon.co.uk/gp/product/B00B7PJM42"
     DATA = (
         (u("Look? The Sun Is Rising"), "5:11"),
-        (u("Be Free, A Way"), "5:13"),
+        (u("Be Free, a Way"), "5:13"),
         (u("Try to Explain"), "5:00"),
         (u("You Lust [Feat. Phantogram]"), "13:02"),
         (u("The Terror"), "6:21"),

@@ -32,7 +32,7 @@ class BoomkatCase(FetchMixin, TestCase):
         (u("Some Fisherman on the Snake River"), "4:25"),
         (u("We Enjoyed Life Together"), "1:46"),
         (u("She Just Quit Coming to School"), "2:07"),
-        (u("It Wasn't A Deer Skull"), "3:04"),
+        (u("It Wasn't a Deer Skull"), "3:04"),
         (u("What Was Found"), "2:16"),
         (u("He Was Inside that Building"), "6:41"),
         (u("The Person of Interest"), "5:27"),

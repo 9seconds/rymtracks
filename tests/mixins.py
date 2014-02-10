@@ -21,3 +21,5 @@ class FetchMixin(object):
 
         self.assertIsNone(result.exception)
         self.assertEqual(self.DATA, result.data)
+        for proper, got in zip(self.DATA, result.data):
+            self.assertEqual(proper, got)

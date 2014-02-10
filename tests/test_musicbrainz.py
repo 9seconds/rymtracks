@@ -27,7 +27,7 @@ class MusicBrainzCase(FetchMixin, TestCase):
           "28a788fd-d6ca-46a8-8443-6403802c40e8"
     DATA = (
         (u("Look... The Sun Is Rising"), "5:12"),
-        (u("Be Free, A Way"), "5:13"),
+        (u("Be Free, a Way"), "5:13"),
         (u("Try to Explain"), "5:00"),
         (u("You Lust"), "13:03"),
         (u("The Terror"), "6:22"),

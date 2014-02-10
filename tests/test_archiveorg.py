@@ -32,9 +32,9 @@ class ArchiveOrgCase(FetchMixin, TestCase):
         (u("Let A"), "4:57"),
         (u("Fortnight"), "4:35"),
         (u("So Soft"), "4:15"),
-        (u("Not A Big Deal"), "3:41"),
+        (u("Not a Big Deal"), "3:41"),
         (u("Long Time No See"), "3:57"),
-        (u("Like A Wind"), "7:10"),
+        (u("Like a Wind"), "7:10"),
         (u("Owen"), "5:14")
     )
 
