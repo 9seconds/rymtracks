@@ -28,13 +28,13 @@ from shutil import rmtree
 from sys import exit as sysexit
 
 from docopt import docopt
-from six import print_, text_type, PY2
+from six import PY2, text_type, print_
 
 
 ###############################################################################
 
 
-__version__ = 0, 1, 3
+__version__ = 0, 1, 3, "fix1"
 __all__ = 'main',
 
 
@@ -48,18 +48,12 @@ NLTK_PATH = path_join(HOME_PATH, "nltk")
 ###############################################################################
 
 
-from .core import execute
-from .formatters import console
-from .services import Service
-
-
-###############################################################################
-
-
 def print_service_locations():
     """
     Just prints recognizible network locations.
     """
+    from .services import Service
+
     for key in Service.network_locations():
         print_(key)
 
@@ -102,6 +96,10 @@ def main():
         return print_service_locations()
     if opts["--update-languages"]:
         return update_languages()
+
+    from .core import execute
+    from .formatters import console
+
     console(execute(urls))
 
 
