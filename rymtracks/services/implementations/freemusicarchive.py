@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of FreeMusicArchive.
+This module contains Service implementations of FreeMusicArchive.
 http://freemusicarchive.com
 """
 
 
-from . import Service, HTMLMixin
+from ..base import HTMLMixin, WebService
 
 from six import text_type
 
@@ -13,7 +13,7 @@ from six import text_type
 ##############################################################################
 
 
-class FreeMusicArchive(HTMLMixin, Service):
+class FreeMusicArchive(HTMLMixin, WebService):
     """
     Implementation of Service which is intended to parse FreeMusicArchive.
     """
@@ -21,10 +21,10 @@ class FreeMusicArchive(HTMLMixin, Service):
     def fetch_tracks(self, soup):
         return soup.select("#content div.playlist div.play-item")
 
-    def fetch_name(self, soup, container):
+    def fetch_name(self, container):
         return container.find("span", class_="playtxt").a
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         length = container.find("span", class_="playtxt")
         length.a.decompose()
         length.b.decompose()

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of 7Digital.
+This module contains Service implementations of 7Digital.
 http://7digital.com
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################
@@ -22,5 +22,5 @@ class SevenDigital(SchemaOrgService):
             itemprop="tracks"
         )
 
-    def fetch_name(self, soup, container):
+    def fetch_name(self, container):
         return container.find(itemprop="name")["content"]

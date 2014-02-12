@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of Jamendo.
+This module contains Service implementations of Jamendo.
 http://jamendo.com
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################

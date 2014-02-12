@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of Archive.org.
+This module contains Service implementations of Archive.org.
 http://archive.org
 """
 
 
-from . import Service, JSONMixin
-from ..capitalization import capitalize
+from ..base import WebService, JSONMixin
+from ...capitalization import capitalize
 
 from requests import Request
 from six import text_type, iteritems
@@ -15,7 +15,7 @@ from six import text_type, iteritems
 ##############################################################################
 
 
-class ArchiveOrg(JSONMixin, Service):
+class ArchiveOrg(JSONMixin, WebService):
     """
     Implementation of Service which is intended to parse Archive.org.
     """

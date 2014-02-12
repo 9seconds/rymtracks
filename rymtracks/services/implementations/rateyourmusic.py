@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of RateYourMusic.
+This module contains Service implementations of RateYourMusic.
 http://rateyourmusic.com
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################

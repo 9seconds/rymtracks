@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of Last.fm.
+This module contains Service implementations of Last.fm.
 http://last.fm
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################
@@ -22,5 +22,5 @@ class LastFM(SchemaOrgService):
             itemprop="tracks"
         )
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         return container.find("td", class_="durationCell")

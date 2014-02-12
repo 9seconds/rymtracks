@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of MusicBrainz.
+This module contains Service implementations of MusicBrainz.
 http://musicbrainz.org
 """
 
 
-from . import Service, XMLMixin
+from __future__ import division
+
+from ..base import XMLMixin, WebService
 
 from requests import Request
 from six import text_type
@@ -15,7 +17,7 @@ from six.moves.urllib.parse import urlparse
 ##############################################################################
 
 
-class MusicBrainz(XMLMixin, Service):
+class MusicBrainz(XMLMixin, WebService):
     """
     Implementation of Service which is intended to parse MusicBrainz.
     """
@@ -36,10 +38,10 @@ class MusicBrainz(XMLMixin, Service):
     def fetch_tracks(self, soup):
         return soup.find_all("track")
 
-    def fetch_name(self, soup, container):
+    def fetch_name(self, container):
         return container.find("recording").title
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         time = container.find("length")
         if not time:
             return ""

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of BandCamp.
+This module contains Service implementations of BandCamp.
 http://bandcamp.com
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################
@@ -22,5 +22,5 @@ class BandCamp(SchemaOrgService):
             itemprop="tracks"
         )
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         return container.find("span", class_="time")

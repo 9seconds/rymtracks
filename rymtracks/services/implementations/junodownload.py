@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of JunoDownload.
+This module contains Service implementations of JunoDownload.
 http://junodownload.com
 """
 
 
-from . import SchemaOrgService
+from ..base import SchemaOrgService
 
 
 ##############################################################################
@@ -22,7 +22,7 @@ class JunoDownload(SchemaOrgService):
             itemprop="tracks"
         )
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         return container.find(
             "div",
             class_="product_tracklist_heading_records_length"

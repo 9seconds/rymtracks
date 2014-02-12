@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This package contains implementation of proper RYM capitalization.
+This package contains implementations of proper RYM capitalization.
 
 Please be noticed that only English capitalization is more or less supported
 because it is too hard to recognize language of title based on short texts.

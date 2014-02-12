@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of Boomkat.
+This module contains Service implementations of Boomkat.
 http://boomkat.com
 """
 
 
-from . import Service, HTMLMixin
+from ..base import HTMLMixin, WebService
 
 from re import compile as regex_compile
 
@@ -15,7 +15,7 @@ from six import text_type
 ##############################################################################
 
 
-class Boomkat(HTMLMixin, Service):
+class Boomkat(HTMLMixin, WebService):
     """
     Implementation of Service which is intended to parse Boomkat.
     """
@@ -26,7 +26,7 @@ class Boomkat(HTMLMixin, Service):
     def fetch_tracks(self, soup):
         return soup.select("#tracks-background-top div.tracks-listing")
 
-    def fetch_name(self, soup, container):
+    def fetch_name(self, container):
         title = container.find("div", class_="track-listing-title")
         title.span.decompose()
         title = text_type(title)
@@ -34,5 +34,5 @@ class Boomkat(HTMLMixin, Service):
         title = title.lstrip(": ").rstrip()
         return title
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         return container.find("div", class_="track-listing-duration ")

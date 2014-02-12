@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of ProgArchives.
+This module contains Service implementations of ProgArchives.
 http://progarchives.com
 """
 
 
-from . import Service, HTMLMixin
-from ..capitalization import capitalize
+from ..base import HTMLMixin, WebService
+from ...capitalization import capitalize
 
 from re import compile as regex_compile, VERBOSE as regex_VERBOSE
 
@@ -16,7 +16,7 @@ from six import text_type
 ##############################################################################
 
 
-class ProgArchives(HTMLMixin, Service):
+class ProgArchives(HTMLMixin, WebService):
     """
     Implementation of Service which is intended to parse ProgArchives.
     """

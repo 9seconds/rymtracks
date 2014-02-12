@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-This module contains Service implementation of iTunes.
+This module contains Service implementations of iTunes.
 http://itunes.apple.com
 """
 
 
-from . import Service, HTMLMixin
+from ..base import HTMLMixin, WebService
 
 
 ##############################################################################
 
 
-class ITunes(HTMLMixin, Service):
+class ITunes(HTMLMixin, WebService):
     """
     Implementation of Service which is intended to parse iTunes.
     """
@@ -22,8 +22,8 @@ class ITunes(HTMLMixin, Service):
         )
         return tracks[0].find_all("tr", class_="song")
 
-    def fetch_name(self, soup, container):
+    def fetch_name(self, container):
         return container.find("td", class_="name").find("span", class_="text")
 
-    def fetch_track_length(self, soup, container):
+    def fetch_track_length(self, container):
         return container.find("td", class_="time").find("span", class_="text")
