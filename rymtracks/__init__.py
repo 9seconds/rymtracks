@@ -22,6 +22,7 @@ Options:
 """
 
 
+from locale import getpreferredencoding
 from os import makedirs
 from os.path import exists, expanduser, join as path_join
 from shutil import rmtree
@@ -43,6 +44,8 @@ __all__ = 'main',
 
 HOME_PATH = path_join(expanduser("~"), ".rymtracks")
 NLTK_PATH = path_join(HOME_PATH, "nltk")
+
+ENCODING = getpreferredencoding().lower()
 
 
 ###############################################################################
@@ -88,10 +91,12 @@ def main():
         )
     )
 
-    urls = [text_type(url) for url in opts["<url>"]]
+    locations = [text_type(url, ENCODING) for url in opts["<url>"]]
     if opts["<filename>"]:
         with open(opts["<filename>"], "r") as res:
-            urls.extend(text_type(url) for url in res.readlines())
+            locations.extend(
+                text_type(url, ENCODING) for url in res.readlines()
+            )
     if opts["-l"]:
         return print_service_locations()
     if opts["--update-languages"]:
@@ -100,7 +105,7 @@ def main():
     from .core import execute
     from .formatters import console
 
-    console(execute(urls))
+    console(execute(locations))
 
 
 ##############################################################################

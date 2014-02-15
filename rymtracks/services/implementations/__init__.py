@@ -8,6 +8,7 @@ from .bandcamp import BandCamp
 from .beatport import BeatPort
 from .boomkat import Boomkat
 from .discogs import Discogs
+from .filesystem import FileSystem
 from .freemusicarchive import FreeMusicArchive
 from .itunes import ITunes
 from .jamendo import Jamendo
@@ -18,6 +19,12 @@ from .progarchives import ProgArchives
 from .rateyourmusic import RateYourMusic
 from .sevendigital import SevenDigital
 from ..base import Service
+
+
+###############################################################################
+
+
+FILESYSTEM_LOCATION = "*"
 
 
 ###############################################################################
@@ -47,3 +54,4 @@ Service.register(MusicBrainz, "musicbrainz.org")
 Service.register(ProgArchives, "progarchives.com")
 Service.register(RateYourMusic, "rateyourmusic.com")
 Service.register(SevenDigital, "7digital.com")
+Service.register(FileSystem, FILESYSTEM_LOCATION)

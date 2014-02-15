@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from six import text_type
 from six.moves.urllib.parse import urlparse
@@ -32,35 +32,46 @@ class Service(object):
     """
 
     # A collection of parser classes binded to network locations.
-    _PARSERS = []
+    _PARSERS = OrderedDict()
 
     # -------------------------------------------------------------------------
 
     @classmethod
-    def register(cls, class_, *netlocs):
+    def register(cls, class_, *locations):
         """
         Registers parser class to the list of network locations. Please
         remember that lookup is done by longest name so if you want
         """
-        cls._PARSERS += [(loc, class_) for loc in netlocs]
-        cls._PARSERS.sort(key=lambda el: len(el[0]), reverse=True)
+        cls._PARSERS = OrderedDict(
+            sorted(
+                cls._PARSERS.items() + [(loc, class_) for loc in locations],
+                key=lambda item: len(item[0]), reverse=True
+            )
+        )
 
     @classmethod
-    def produce(cls, url):
+    def produce(cls, location):
         """
         Factory method to return appropriate Service instance for given URL.
         """
-        parsed_url = urlparse(url)
-        for loc, class_ in cls._PARSERS:
-            if parsed_url.netloc.endswith(loc):
-                return class_(url)
+        if location.startswith(("http://", "https://")):
+            parsed_url = urlparse(location)
+            for loc, class_ in cls._PARSERS.iteritems():
+                if parsed_url.netloc.endswith(loc):
+                    return class_(location)
+        else:
+            from ..implementations import FILESYSTEM_LOCATION
+            return cls._PARSERS[FILESYSTEM_LOCATION](location)
 
     @classmethod
     def network_locations(cls):
         """
         Returns the list of parseable network locations.
         """
-        return sorted(loc for loc, class_ in cls._PARSERS)
+        from ..implementations import FILESYSTEM_LOCATION
+        return sorted(
+            loc for loc, class_ in cls._PARSERS if loc != FILESYSTEM_LOCATION
+        )
 
     # -------------------------------------------------------------------------
 
