@@ -43,7 +43,7 @@ class Install(install):
 
     def do_egg_install(self):
         install.do_egg_install(self)
-        #self.run_command("update_nltk_data")
+        self.run_command("update_nltk_data")
 
 
 ##############################################################################
