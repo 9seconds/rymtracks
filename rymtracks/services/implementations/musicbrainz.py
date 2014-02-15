@@ -23,7 +23,7 @@ class MusicBrainz(XMLMixin, WebService):
     """
 
     def generate_request(self):
-        url = urlparse(self.url).path.rstrip("/").rpartition("/")[-1]
+        url = urlparse(self.location).path.rstrip("/").rpartition("/")[-1]
         url = "http://musicbrainz.org/ws/2/release/" + url
         return Request(
             'GET', url,

@@ -89,14 +89,13 @@ class EnglishCapitalization(Capitalization):
                     word = word.capitalize()
             truecased_words.append(word)
 
-        for idx in (0, -1):
-            word = truecased_words[idx]
-            if word != word.upper():
-                truecased_words[idx] = word.capitalize()
+        if truecased_words:
+            for idx in (0, -1):
+                word = truecased_words[idx]
+                if word != word.upper():
+                    truecased_words[idx] = word.capitalize()
 
-        coerced_sentence = " ".join(truecased_words)
-
-        return coerced_sentence
+        return " ".join(truecased_words)
 
 
 class WorldCapitalization(Capitalization):

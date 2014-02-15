@@ -43,7 +43,7 @@ class Install(install):
 
     def do_egg_install(self):
         install.do_egg_install(self)
-        self.run_command("update_nltk_data")
+        #self.run_command("update_nltk_data")
 
 
 ##############################################################################
@@ -68,12 +68,19 @@ EXTRAS = {}
 
 
 if python_version < (3,):
-    REQUIREMENTS.append("futures==2.1.6")
+    REQUIREMENTS.extend(
+        [
+            "futures==2.1.6",
+            "mutagen==1.22"
+        ]
+    )
     EXTRAS["cmdclass"] = {
         "install": Install,
         "update_nltk_data": UpdateNLTKData
     }
     EXTRAS["setup_requires"] = ["nltk==2.0.4"]
+else:
+    REQUIREMENTS.append("mutagenx==1.22")
 
 with open("README.rst", "r") as resource:
     LONG_DESCRIPTION = resource.read()

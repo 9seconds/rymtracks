@@ -21,7 +21,7 @@ class ArchiveOrg(JSONMixin, WebService):
     """
 
     def generate_request(self):
-        resource = self.url.rstrip("/").rpartition("/")[-1]
+        resource = self.location.rstrip("/").rpartition("/")[-1]
         return Request(
             "GET", "http://archive.org/metadata/" + resource + "/files/",
             headers={

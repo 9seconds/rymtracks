@@ -22,10 +22,8 @@ class WebService(Service):
 
     # ------------------------------------------------------------------------
 
-    def __init__(self, url):
-        super(WebService, self).__init__()
-
-        self.url = url
+    def __init__(self, location):
+        super(WebService, self).__init__(location)
         self.session = Session()
 
     # ------------------------------------------------------------------------
@@ -42,12 +40,12 @@ class WebService(Service):
         try:
             parsed_result = self.parse(response)
         except Exception as exc:
-            return ParserResponse(self.url, [], exc)
-        return ParserResponse(self.url, parsed_result, None)
+            return ParserResponse(self.location, [], exc)
+        return ParserResponse(self.location, parsed_result, None)
 
     def generate_request(self):
         return Request(
-            "GET", self.url,
+            "GET", self.location,
             headers={
                 "User-Agent": self.USER_AGENT,
             }

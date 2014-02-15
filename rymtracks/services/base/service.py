@@ -103,6 +103,11 @@ class Service(object):
 
     # -------------------------------------------------------------------------
 
+    def __init__(self, location):
+        self.location = location
+
+    # -------------------------------------------------------------------------
+
     def get_result(self):
         """
         Main interface method user has to invoke.
