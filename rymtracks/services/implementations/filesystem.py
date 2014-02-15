@@ -28,7 +28,9 @@ else:
 
 
 # Just convenient structure to store metainformation on each file
-FileMeta = namedtuple("FileMeta", ["disc", "track_number", "title", "length"])
+FileMeta = namedtuple(
+    "FileMeta", ["disc", "track_number", "title", "length", "filename"]
+)
 
 
 ###############################################################################
@@ -78,7 +80,9 @@ class FileSystem(Service):
 
         futures = chain.from_iterable(futures)
         results = [result for result in futures if result is not None]
-        results.sort(key=lambda item: (item.disc, item.track_number))
+        results.sort(
+            key=lambda item: (item.disc, item.track_number, item.filename)
+        )
 
         results = tuple(
             (capitalize(item.title), self.normalize_track_length(item.length))
@@ -105,4 +109,4 @@ class FileSystem(Service):
         length = int(ceil(meta.info.length))
         length = self.second_to_timestamp(length)
 
-        return FileMeta(disc_number, track_number, title, length)
+        return FileMeta(disc_number, track_number, title, length, filename)
