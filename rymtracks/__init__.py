@@ -19,6 +19,10 @@ Options:
                         capitalization
     -f                  Filename with urls.
     -l                  Show parseable network locations.
+
+If you have any question please contact Sergey Arkhipov
+(serge@aerialsounds.org) or use GitHub issue tracker:
+https://github.com/9seconds/rymtracks/issues
 """
 
 
