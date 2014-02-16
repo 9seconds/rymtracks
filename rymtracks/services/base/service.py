@@ -70,7 +70,8 @@ class Service(object):
         """
         from ..implementations import FILESYSTEM_LOCATION
         return sorted(
-            loc for loc, class_ in cls._PARSERS if loc != FILESYSTEM_LOCATION
+            loc for loc, class_ in cls._PARSERS.iteritems()
+            if loc != FILESYSTEM_LOCATION
         )
 
     # -------------------------------------------------------------------------

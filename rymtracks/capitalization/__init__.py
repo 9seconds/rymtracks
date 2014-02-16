@@ -19,7 +19,6 @@ tries to reduce your pain.
 
 from re import compile as regex_compile, IGNORECASE as re_IGNORECASE, \
     VERBOSE as re_VERBOSE, UNICODE as re_UNICODE
-from warnings import warn
 
 from six import PY2, text_type
 
@@ -39,11 +38,6 @@ else:
     try:
         from .py2 import capitalize as specific_capitalize
     except LookupError:
-        warn(
-            "NLTK data cannot be found. "
-            "Please run rymtracks --update-languages to update it. "
-            "RYMTracks won't do any capitalization without NLTK data"
-        )
         from .py3 import capitalize as specific_capitalize
 
 

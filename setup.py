@@ -5,45 +5,8 @@ Setup script for RYMTracks.
 """
 
 
-from distutils.command.install_data import install_data
 from sys import version_info as python_version
 from setuptools import setup, find_packages
-from setuptools.command.install import install
-
-
-##############################################################################
-
-
-class UpdateNLTKData(install_data):
-    """
-    Updater of NLTK data
-    """
-
-    def run(self):
-        from os import makedirs
-        from os.path import expanduser, exists, join
-        from shutil import rmtree
-        from nltk import download
-
-        home_directory = join(expanduser("~"), ".rymtracks")
-        nltk_data_directory = join(home_directory, "nltk")
-        if not exists(home_directory):
-            makedirs(home_directory)
-        rmtree(nltk_data_directory, True)
-        makedirs(nltk_data_directory)
-
-        for data in ("stopwords", "punkt", "maxent_treebank_pos_tagger"):
-            download(data, download_dir=nltk_data_directory)
-
-
-class Install(install):
-    """
-    Custom procedure which updates NLTK data on install
-    """
-
-    def do_egg_install(self):
-        install.do_egg_install(self)
-        self.run_command("update_nltk_data")
 
 
 ##############################################################################
@@ -61,8 +24,6 @@ REQUIREMENTS = [
     "requests==2.2.1"
 ]
 
-EXTRAS = {}
-
 
 ##############################################################################
 
@@ -74,11 +35,6 @@ if python_version < (3,):
             "mutagen==1.22"
         ]
     )
-    EXTRAS["cmdclass"] = {
-        "install": Install,
-        "update_nltk_data": UpdateNLTKData
-    }
-    EXTRAS["setup_requires"] = ["nltk==2.0.4"]
 else:
     REQUIREMENTS.append("mutagenx==1.22")
 
@@ -117,6 +73,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking",
         "Topic :: Utilities"
     ],
-    zip_safe=False,
-    **EXTRAS
+    zip_safe=False
 )

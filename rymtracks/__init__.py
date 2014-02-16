@@ -5,7 +5,7 @@ RYMTracks scraps given URLs and presents tracklists into copypasteable form
 for RateYourMusic.com.
 
 Usage:
-    rymtracks <url>...
+    rymtracks <location>...
     rymtracks -f <filename>
     rymtracks -l
     rymtracks --update-languages
@@ -22,6 +22,7 @@ Options:
 """
 
 
+from distutils.util import strtobool
 from locale import getpreferredencoding
 from os import makedirs
 from os.path import exists, expanduser, join as path_join
@@ -91,7 +92,7 @@ def main():
         )
     )
 
-    locations = [text_type(url, ENCODING) for url in opts["<url>"]]
+    locations = [text_type(url, ENCODING) for url in opts["<location>"]]
     if opts["<filename>"]:
         with open(opts["<filename>"], "r") as res:
             locations.extend(
@@ -101,6 +102,24 @@ def main():
         return print_service_locations()
     if opts["--update-languages"]:
         return update_languages()
+
+    if PY2:
+        try:
+            from .capitalization.py2 import capitalize
+        except LookupError:
+            print_("Language data is absent or corrupted.")
+            input = raw_input("Do you want to update it? ([Y/N]): ")
+            try:
+                input = strtobool(input)
+            except ValueError:
+                input = False
+
+            if input:
+                update_languages()
+            else:
+                print_(
+                    "It is ok, but capitalization would be pretty primitive"
+                )
 
     from .core import execute
     from .formatters import console
