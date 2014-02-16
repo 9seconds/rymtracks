@@ -4,17 +4,34 @@ Just a collections ot utilites used here and there.
 """
 
 
-from six import PY2, text_type as text_type_
+from contextlib import contextmanager
+from functools import reduce as six_reduce
+
+from colorama import Fore, Back, Style
+from termcolor import colored as termcolored
+from six import print_
 
 
 ###############################################################################
 
 
-def text_type(text):
-    """
-    text_type and u from six won't give you good results anytime if you know
-    that charset is UTF-8.
-    """
-    if PY2 and isinstance(text, str):
-        return text.decode("utf-8")
-    return text_type_(text)
+COLORED = True
+
+
+###############################################################################
+
+
+@contextmanager
+def colored(*colorama_options):
+    set_options = six_reduce(lambda x, y: x + y, colorama_options, "")
+    print_(set_options, end="")
+
+    yield
+
+    print_(Fore.RESET + Back.RESET + Style.RESET_ALL, end="")
+
+
+def msg(message, foreground=None, background=None, attrs=None):
+    if not COLORED:
+        return message
+    return termcolored(message, foreground, background, attrs)

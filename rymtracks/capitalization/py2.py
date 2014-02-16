@@ -5,13 +5,13 @@ This module contains capitalization definitions for RYM in Python 2.
 
 
 from .. import NLTK_PATH
-from ..utils import text_type
 
 from itertools import chain
 
 from nltk import word_tokenize, wordpunct_tokenize, sent_tokenize, pos_tag, \
     data as NLTK_DATA
 from nltk.corpus import stopwords
+from six import text_type
 
 
 ###############################################################################
@@ -26,11 +26,13 @@ NLTK_DATA.path[0:0] = [NLTK_PATH]
 
 PRECALCULATED_LANGSETS = {}
 for _language in stopwords.fileids():
-    stopwords_set = set(text_type(wrd) for wrd in stopwords.words(_language))
+    stopwords_set = set(
+        text_type(wrd, "utf-8") for wrd in stopwords.words(_language)
+    )
     stopwords_set = (wordpunct_tokenize(word) for word in stopwords_set)
     PRECALCULATED_LANGSETS[_language] = set(chain.from_iterable(stopwords_set))
 
-CYRILLIC_ALPHABET = text_type("ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬЬБЮ")
+CYRILLIC_ALPHABET = text_type("ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬЬБЮ", "utf-8")
 CYRILLIC_ALPHABET = frozenset(CYRILLIC_ALPHABET + CYRILLIC_ALPHABET.lower())
 
 
@@ -52,7 +54,6 @@ class Capitalization(object):
         """
         Capitalizes whole text.
         """
-        text = text_type(text)
         return " ".join(
             self.capitalize_sentence(sent) for sent in sent_tokenize(text)
         )
@@ -247,7 +248,7 @@ class SpanishCapitalization(WorldCapitalization):
         "venezolanoa",
     )
     SUBSTITUTIONS = chain(PREPOSITIONS, PLACE_IDS, LANGUAGES)
-    SUBSTITUTIONS = [text_type(sbst) for sbst in SUBSTITUTIONS]
+    SUBSTITUTIONS = [text_type(sbst, "utf-8") for sbst in SUBSTITUTIONS]
 
     def apply_specifics(self, sentence):
         tokens = sentence.split(" ")
@@ -276,11 +277,12 @@ def capitalize(text):
     """
     Text capitalizator for Python 2.
     """
-    text = text_type(text)
+    if isinstance(text, str):
+        text = text.decode("utf-8")
     if set(text) & CYRILLIC_ALPHABET:
         language = "russian"
     else:
-        words = set(wordpunct_tokenize(text_type(text).lower()))
+        words = set(wordpunct_tokenize(text.lower()))
         language = max(
             stopwords.fileids(),
             key=lambda lang: len(words & PRECALCULATED_LANGSETS[lang])

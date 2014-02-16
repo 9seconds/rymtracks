@@ -64,26 +64,26 @@ class FileSystem(Service):
         return meta.get(attr, [default])[0]
 
     def get_result(self):
-        mutagen_pool = ThreadPoolExecutor(cpu_count())
         if not (isdir(self.location) and access(self.location, R_OK)):
             return ParserResponse(self.location, [], Exception("Empty list"))
 
         visited = set()
         futures = []
-        for root, dirs, files in walk(self.location, followlinks=True):
-            root = self.normalize_walk_paths(root)
-            if root in visited:
-                continue
-            visited.add(root)
-            files = self.normalize_walk_paths(files, root)
-            futures.append(mutagen_pool.map(self.fetch_meta, files))
+        with ThreadPoolExecutor(cpu_count()) as mutagen_pool:
+            for root, dirs, files in walk(self.location, followlinks=True):
+                root = self.normalize_walk_paths(root)
+                if root in visited:
+                    continue
+                visited.add(root)
+                files = self.normalize_walk_paths(files, root)
+                futures.append(mutagen_pool.map(self.fetch_meta, files))
 
-        futures = chain.from_iterable(futures)
-        results = [result for result in futures if result is not None]
+            futures = chain.from_iterable(futures)
+            results = [result for result in futures if result is not None]
+
         results.sort(
             key=lambda item: (item.disc, item.track_number, item.filename)
         )
-
         results = tuple(
             (capitalize(item.title), self.normalize_track_length(item.length))
             for item in results

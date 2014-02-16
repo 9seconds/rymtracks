@@ -6,7 +6,7 @@ Core logic of RYMTracks.
 
 from .services import Service
 
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 
 ##############################################################################
@@ -30,5 +30,6 @@ def execute(locations):
     Just some function to be executed by main function.
     """
     tasks = [Service.produce(loc) for loc in locations]
-    with ProcessPoolExecutor(len(locations)) as task_pool:
+    return [task.get_result() for task in tasks]
+    with ThreadPoolExecutor(len(locations)) as task_pool:
         return list(task_pool.map(execute_task, tasks))

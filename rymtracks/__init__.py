@@ -5,10 +5,7 @@ RYMTracks scraps given URLs and presents tracklists into copypasteable form
 for RateYourMusic.com.
 
 Usage:
-    rymtracks <location>...
-    rymtracks -f <filename>
-    rymtracks -l
-    rymtracks --update-languages
+    rymtracks [options] <location>...
     rymtracks (-h | --help)
     rymtracks --version
 
@@ -17,6 +14,7 @@ Options:
     --version           Show version.
     --update-languages  Installs languages datafiles for proper RYM
                         capitalization
+    --no-color          Removes colored output
     -f                  Filename with urls.
     -l                  Show parseable network locations.
 
@@ -26,6 +24,8 @@ https://github.com/9seconds/rymtracks/issues
 """
 
 
+from .utils import colored, msg
+
 from distutils.util import strtobool
 from locale import getpreferredencoding
 from os import makedirs
@@ -34,6 +34,7 @@ from shutil import rmtree
 from sys import exit as sysexit
 
 from docopt import docopt
+from colorama import init as colorama_init, Fore
 from six import PY2, text_type, print_
 
 
@@ -51,6 +52,8 @@ HOME_PATH = path_join(expanduser("~"), ".rymtracks")
 NLTK_PATH = path_join(HOME_PATH, "nltk")
 
 ENCODING = getpreferredencoding().lower()
+
+colorama_init()
 
 
 ###############################################################################
@@ -97,11 +100,14 @@ def main():
     )
 
     locations = [text_type(url, ENCODING) for url in opts["<location>"]]
-    if opts["<filename>"]:
-        with open(opts["<filename>"], "r") as res:
+    if opts["-f"]:
+        with open(opts["-f"], "r") as res:
             locations.extend(
                 text_type(url, ENCODING) for url in res.readlines()
             )
+    if opts["--no-color"]:
+        import utils
+        utils.COLORED = False
     if opts["-l"]:
         return print_service_locations()
     if opts["--update-languages"]:
@@ -111,18 +117,35 @@ def main():
         try:
             from .capitalization.py2 import capitalize
         except LookupError:
-            print_("Language data is absent or corrupted.")
-            input = raw_input("Do you want to update it? ([Y/N]): ")
+            print_(
+                msg(
+                    "Language data is absent or corrupted.",
+                    "cyan"
+                )
+            )
+            try:
+                message = msg("Do you want to update it? ", "cyan")
+                message += msg("[Y/N]", "cyan", attrs=["bold"])
+                message += msg(": ", "cyan")
+                input = raw_input(message)
+            except (EOFError, KeyboardInterrupt):
+                print_("")
+                sysexit(0)
             try:
                 input = strtobool(input)
             except ValueError:
                 input = False
 
             if input:
-                update_languages()
+                with colored(Fore.MAGENTA):
+                    update_languages()
             else:
                 print_(
-                    "It is ok, but capitalization would be pretty primitive"
+                    msg(
+                        "It is ok, but capitalization would "
+                        "be pretty primitive",
+                        "cyan"
+                    )
                 )
 
     from .core import execute
@@ -135,4 +158,7 @@ def main():
 
 
 if __name__ == "__main__":
-    sysexit(main())
+    try:
+        sysexit(main())
+    except KeyboardInterrupt:
+        pass
