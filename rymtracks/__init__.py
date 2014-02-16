@@ -6,6 +6,8 @@ for RateYourMusic.com.
 
 Usage:
     rymtracks [options] <location>...
+    rymtracks --update-languages
+    rymtracks -l
     rymtracks (-h | --help)
     rymtracks --version
 
