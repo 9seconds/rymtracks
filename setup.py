@@ -13,17 +13,16 @@ from setuptools import setup, find_packages
 
 
 REQUIREMENTS = [
-    "beautifulsoup4==4.3.2",
-    "lxml==3.3.0",
-    "isodate==0.4.9",
-    "docopt==0.6.1",
-    "nose==1.3.0",
-    "six==1.5.2",
-    "nltk==2.0.4",
-    "numpy==1.8.0",
-    "requests==2.2.1",
-    "colorama==0.2.7",
-    "termcolor==1.1.0"
+    "beautifulsoup4>=4.3.2",
+    "lxml>=3.3.0",
+    "isodate>=0.4.9",
+    "docopt>=0.6.1",
+    "nose>=1.3.0",
+    "six>=1.5.2",
+    "nltk>=2.0.4",
+    "requests>=2.2.1",
+    "colorama>=0.2.7",
+    "termcolor>=1.1.0"
 ]
 
 
@@ -33,12 +32,12 @@ REQUIREMENTS = [
 if python_version < (3,):
     REQUIREMENTS.extend(
         [
-            "futures==2.1.6",
-            "mutagen==1.22"
+            "futures>=2.1.6",
+            "mutagen>=1.22"
         ]
     )
 else:
-    REQUIREMENTS.append("mutagenx==1.22")
+    REQUIREMENTS.append("mutagenx>=1.22")
 
 with open("README.rst", "r") as resource:
     LONG_DESCRIPTION = resource.read()
