@@ -16,7 +16,6 @@ Options:
     --version           Show version.
     --update-languages  Installs languages datafiles for proper RYM
                         capitalization
-    --no-color          Removes colored output
     -f                  Filename with urls.
     -l                  Show parseable network locations.
 
@@ -26,36 +25,43 @@ https://github.com/9seconds/rymtracks/issues
 """
 
 
-from .utils import colored, msg
+from __future__ import absolute_import, unicode_literals, print_function
 
-from distutils.util import strtobool
-from locale import getpreferredencoding
-from os import makedirs
-from os.path import exists, expanduser, join as path_join
-from shutil import rmtree
-from sys import exit as sysexit
+import distutils.util
+import locale
+import os
+import os.path
+import shutil
+import sys
 
-from docopt import docopt
-from colorama import init as colorama_init, Fore
-from six import PY2, text_type, print_
+import docopt
+import nltk
+import six
+
+from .capitalization import capitalize, init as capitalize_init
+from .core import execute
+from .formatters import console
+from .services import Service
 
 
 ###############################################################################
 
 
-__version__ = 0, 1, 4
+__version__ = 0, 2
 __all__ = 'main',
 
 
 ###############################################################################
 
 
-HOME_PATH = path_join(expanduser("~"), ".rymtracks")
-NLTK_PATH = path_join(HOME_PATH, "nltk")
+HOME_PATH = os.path.expanduser("~")
+APP_PATH = os.path.join(HOME_PATH, ".rymtracks")
+NLTK_PATH = os.path.join(APP_PATH, "nltk")
 
-ENCODING = getpreferredencoding().lower()
-
-colorama_init()
+ENCODING = locale.getpreferredencoding().lower()
+VERSION = "RYMTracks {}".format(
+    ".".join(str(number) for number in __version__)
+)
 
 
 ###############################################################################
@@ -65,10 +71,9 @@ def print_service_locations():
     """
     Just prints recognizible network locations.
     """
-    from .services import Service
 
     for key in Service.network_locations():
-        print_(key)
+        print(key)
 
 
 def update_languages():
@@ -76,82 +81,55 @@ def update_languages():
     Updates NLTK data in your local home. Does nothing on Python 3 because
     NLTK does not support it yet.
     """
-    if not PY2:
-        return
 
-    from nltk import download
-
-    if not exists(HOME_PATH):
-        makedirs(HOME_PATH)
-    rmtree(NLTK_PATH, True)
-    makedirs(NLTK_PATH)
+    shutil.rmtree(NLTK_PATH, True)
+    os.makedirs(NLTK_PATH)
 
     for data in ("stopwords", "punkt", "maxent_treebank_pos_tagger"):
-        download(data, download_dir=NLTK_PATH)
+        nltk.download(data, download_dir=NLTK_PATH)
+
+
+def encode(text):
+    return six.text_type(text, ENCODING)
 
 
 def main():
     """
     Main function. rymtracks script executes this.
     """
-    opts = docopt(
-        __doc__,
-        version="RYMTracks {}".format(
-            ".".join(str(num) for num in __version__)
-        )
-    )
 
-    locations = [text_type(url, ENCODING) for url in opts["<location>"]]
+    opts = docopt.docopt( __doc__, version=VERSION)
+
+    locations = list(six.map(encode, opts["<location>"]))
     if opts["-f"]:
         with open(opts["-f"], "r") as res:
-            locations.extend(
-                text_type(url, ENCODING) for url in res.readlines()
-            )
-    if opts["--no-color"]:
-        import utils
-        utils.COLORED = False
+            locations.extend(six.map(encode, res))
+
     if opts["-l"]:
         return print_service_locations()
+
     if opts["--update-languages"]:
         return update_languages()
 
-    if PY2:
+    try:
+        capitalize_init(NLTK_PATH)
+    except LookupError:
+        print("Language data is absent or corrupted.")
         try:
-            from .capitalization.py2 import capitalize
-        except LookupError:
-            print_(
-                msg(
-                    "Language data is absent or corrupted.",
-                    "cyan"
-                )
-            )
-            try:
-                message = msg("Do you want to update it? ", "cyan")
-                message += msg("[Y/N]", "cyan", attrs=["bold"])
-                message += msg(": ", "cyan")
-                input = raw_input(message)
-            except (EOFError, KeyboardInterrupt):
-                print_("")
-                sysexit(0)
-            try:
-                input = strtobool(input)
-            except ValueError:
-                input = False
+            input = raw_input("Do you want to update it? [Y/N]: ")
+        except (EOFError, KeyboardInterrupt):
+            print("")
+            return
 
-            if input:
-                with colored(Fore.MAGENTA):
-                    update_languages()
-            else:
-                print_(
-                    msg(
-                        "It is ok, but capitalization would "
-                        "be pretty primitive",
-                        "cyan"
-                    )
-                )
+        try:
+            input = distutils.util.strtobool(input)
+        except ValueError:
+            input = False
 
-    from .core import execute
-    from .formatters import console
+        if input:
+            update_languages()
+        else:
+            print("It is ok, but capitalization would be pretty primitive")
 
     console(execute(locations))
 
@@ -161,6 +139,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        sysexit(main())
+        sys.exit(main())
     except KeyboardInterrupt:
         pass

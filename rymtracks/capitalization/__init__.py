@@ -17,43 +17,37 @@ tries to reduce your pain.
 """
 
 
-from re import compile as regex_compile, IGNORECASE as re_IGNORECASE, \
-    VERBOSE as re_VERBOSE, UNICODE as re_UNICODE
+from __future__ import absolute_import, unicode_literals
 
-from six import PY2, text_type
+import itertools
+import re
 
+import nltk
+import nltk.data
+import nltk.corpus
+import six
 
-###############################################################################
-
-
-__all__ = "capitalize",
-
-
-###############################################################################
-
-
-if not PY2:
-    from .py3 import capitalize as specific_capitalize
-else:
-    try:
-        from .py2 import capitalize as specific_capitalize
-    except LookupError:
-        from .py3 import capitalize as specific_capitalize
+from .english import EnglishCapitalization
+from .dutch import DutchCapitalization
+from .russian import RussianCapitalization
+from .spanish import SpanishCapitalization
 
 
-###############################################################################
+PRECALCULATED_LANGSETS = {}
 
+CYRILLIC_ALPHABET = "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬЬБЮ"
+CYRILLIC_ALPHABET = frozenset(CYRILLIC_ALPHABET + CYRILLIC_ALPHABET.lower())
 
-FIX_PUNCTUATION = regex_compile(r"\s+(?=[\.,!?:;])")
-SEPARATORS = regex_compile(r"([\[\]\(\)'\"\{\}\.,?!:;])")
-FIX_LEFT_QUOTES = regex_compile(r"(?<=['\"])\s+")
-FIX_RIGHT_QUOTES = regex_compile(r"(?<!\w|\d)\s+(?=['\"])", re_UNICODE)
-FIX_LEFT_BRACES = regex_compile(r"(?<=[\[\(\}])\s+")
-FIX_RIGHT_BRACES = regex_compile(r"\s+(?=[\]\}\)])")
-FIX_SPACES = regex_compile(r"\s{2,}")
-FIX_QUOTES = regex_compile(r"'{2,}")
-FIX_SHORT_FORMS = regex_compile(r"\s+'(re|s|t)\b", re_IGNORECASE)
-FIX_ROMAN_NUMERALS = regex_compile(
+FIX_PUNCTUATION = re.compile(r"\s+(?=[\.,!?:;])")
+SEPARATORS = re.compile(r"([\[\]\(\)'\"\{\}\.,?!:;])")
+FIX_LEFT_QUOTES = re.compile(r"(?<=['\"])\s+")
+FIX_RIGHT_QUOTES = re.compile(r"(?<!\w|\d)\s+(?=['\"])", re.UNICODE)
+FIX_LEFT_BRACES = re.compile(r"(?<=[\[\(\}])\s+")
+FIX_RIGHT_BRACES = re.compile(r"\s+(?=[\]\}\)])")
+FIX_SPACES = re.compile(r"\s{2,}")
+FIX_QUOTES = re.compile(r"'{2,}")
+FIX_SHORT_FORMS = re.compile(r"\s+'(re|s|t)\b", re.IGNORECASE)
+FIX_ROMAN_NUMERALS = re.compile(
     r"""
         \b
             M{0,4}
@@ -62,17 +56,25 @@ FIX_ROMAN_NUMERALS = regex_compile(
             (IX|IV|V?I{0,3})
         \b
     """,
-    re_VERBOSE | re_IGNORECASE
+    re.VERBOSE | re.IGNORECASE
 )
 
 
-###############################################################################
+def init(path):
+    nltk.data.path.insert(0, path)
+
+    for language in nltk.corpus.stopwords.fileids():
+        stopwords_set = frozenset(nltk.corpus.stopwords.words(language))
+        stopwords_set = six.map(nltk.wordpunct_tokenize, stopwords_set)
+        stopwords_set = itertools.chain.from_iterable(stopwords_set)
+        PRECALCULATED_LANGSETS[language] = frozenset(stopwords_set)
 
 
 def fix_roman_numeral(matcher):
     """
     Uppercases roman numerals. Has to be used with regexp FIX_ROMAN_NUMERALS.
     """
+
     return matcher.group(0).upper()
 
 
@@ -81,7 +83,32 @@ def fix_short_form(matcher):
     Fixes short forms like "don 't" or "nobody 's". Has to be used with
     regexp FIX_SHORT_FORMS.
     """
+
     return "'" + matcher.group(1).lower()
+
+
+def specific_capitalize(text):
+    """
+    Capitalize text according to the NLTK.
+    """
+
+    if set(text) & CYRILLIC_ALPHABET:
+        language = "russian"
+    else:
+        words = set(nltk.wordpunct_tokenize(text.lower()))
+        language = max(
+            nltk.corpus.stopwords.fileids(),
+            key=lambda lang: len(words & PRECALCULATED_LANGSETS[lang])
+        )
+
+    class_ = EnglishCapitalization
+    if language == "russian":
+        class_ = RussianCapitalization
+    elif language == "spanish":
+        class_ = SpanishCapitalization
+    elif language == "dutch":
+        class_ = DutchCapitalization
+    return class_().capitalize(text)
 
 
 def capitalize(text):
@@ -90,7 +117,7 @@ def capitalize(text):
     to the rules of the language and returns somewhat properly capitalized
     result.
     """
-    text = text_type(text)
+
     text = SEPARATORS.sub(r" \1 ", text)
 
     text = " / ".join(specific_capitalize(part) for part in text.split("/"))
