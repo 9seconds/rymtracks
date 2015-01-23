@@ -4,11 +4,10 @@ This module contains Service implementations of iTunes.
 http://itunes.apple.com
 """
 
+from __future__ import absolute_import, unicode_literals
 
-from ..base import HTMLMixin, WebService
-
-
-##############################################################################
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 
 
 class ITunes(HTMLMixin, WebService):

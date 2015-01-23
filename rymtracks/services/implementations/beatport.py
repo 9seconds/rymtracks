@@ -5,12 +5,12 @@ http://beatport.com
 """
 
 
-from ..base import HTMLMixin, WebService
+from __future__ import absolute_import, unicode_literals
+
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 
 from six import text_type
-
-
-##############################################################################
 
 
 class BeatPort(HTMLMixin, WebService):

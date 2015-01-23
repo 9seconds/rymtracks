@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import absolute_import, unicode_literals
+
+import bs4
+
 from .water import Water
-
-from bs4 import BeautifulSoup
-
-
-###############################################################################
-
-
-__all__ = "HTMLMixin", "JSONMixin", "XMLMixin"
-
-
-###############################################################################
-
 
 
 class HTMLMixin(object):
@@ -27,7 +19,8 @@ class HTMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return Water(BeautifulSoup(response.text, "html"))
+
+        return Water(bs4.BeautifulSoup(response.text, "html"))
 
 
 class JSONMixin(object):
@@ -40,6 +33,7 @@ class JSONMixin(object):
         """
         Converts response into Python objects.
         """
+
         return response.json()
 
 
@@ -54,4 +48,5 @@ class XMLMixin(object):
         """
         Converter of response into Beautiful Soup instance.
         """
-        return Water(BeautifulSoup(response.text, "xml"))
+
+        return Water(bs4.BeautifulSoup(response.text, "xml"))

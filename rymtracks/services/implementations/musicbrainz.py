@@ -4,17 +4,13 @@ This module contains Service implementations of MusicBrainz.
 http://musicbrainz.org
 """
 
+from __future__ import division, absolute_import, unicode_literals
 
-from __future__ import division
+import requests
+import six
 
-from ..base import XMLMixin, WebService
-
-from requests import Request
-from six import text_type
-from six.moves.urllib.parse import urlparse
-
-
-##############################################################################
+from ..mixins import XMLMixin
+from ..webservice import WebService
 
 
 class MusicBrainz(XMLMixin, WebService):
@@ -23,16 +19,13 @@ class MusicBrainz(XMLMixin, WebService):
     """
 
     def generate_request(self):
-        url = urlparse(self.location).path.rstrip("/").rpartition("/")[-1]
-        url = "http://musicbrainz.org/ws/2/release/" + url
-        return Request(
+        url = six.moves.urllib.parse.urlparse(self.location).path.rstrip("/").rpartition("/")[-1]
+        url = "http://musicbrainz.org/ws/2/release/{0}".format(url)
+
+        return requests.Request(
             'GET', url,
-            params={
-                "inc": "recordings"
-            },
-            headers={
-                "User-Agent": self.USER_AGENT
-            }
+            params={"inc": "recordings"},
+            headers={"User-Agent": self.USER_AGENT}
         )
 
     def fetch_tracks(self, soup):
@@ -45,6 +38,7 @@ class MusicBrainz(XMLMixin, WebService):
         time = container.find("length")
         if not time:
             return ""
+
         # text_type is a must here because we have to convert Water
         # to text first.
-        return self.second_to_timestamp(int(text_type(time)) // 1000)
+        return self.second_to_timestamp(int(six.text_type(time)) // 1000)

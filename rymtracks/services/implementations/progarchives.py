@@ -5,15 +5,15 @@ http://progarchives.com
 """
 
 
-from ..base import HTMLMixin, WebService
+from __future__ import absolute_import, unicode_literals
+
+import re
+
+import six
+
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 from ...capitalization import capitalize
-
-from re import compile as regex_compile, VERBOSE as regex_VERBOSE
-
-from six import text_type
-
-
-##############################################################################
 
 
 class ProgArchives(HTMLMixin, WebService):
@@ -21,7 +21,7 @@ class ProgArchives(HTMLMixin, WebService):
     Implementation of Service which is intended to parse ProgArchives.
     """
 
-    TRACK_REGEXP = regex_compile(
+    TRACK_REGEXP = re.compile(
         r"""
             ^
             (?P<number>\d+)\.\s*
@@ -33,7 +33,7 @@ class ProgArchives(HTMLMixin, WebService):
             )?\s*
             $
         """,
-        regex_VERBOSE
+        re.VERBOSE
     )
 
     def parse(self, response):
@@ -42,7 +42,7 @@ class ProgArchives(HTMLMixin, WebService):
         tracks = converted_response.table.find_all("td")
         tracks = tracks[-1].p
         tracks = [
-            text_type(chunk).strip() for chunk in tracks.stripped_strings
+            six.text_type(chunk).strip() for chunk in tracks.stripped_strings
         ]
 
         extracted_data = []
@@ -50,6 +50,7 @@ class ProgArchives(HTMLMixin, WebService):
             matcher = self.TRACK_REGEXP.search(track)
             if not matcher:
                 continue
+
             matches = matcher.groupdict()
             title = capitalize(matches["title"])
             length = self.normalize_track_length(matches["length"] or "")
@@ -57,4 +58,5 @@ class ProgArchives(HTMLMixin, WebService):
 
         if not extracted_data:
             raise Exception("Empty list")
+
         return tuple(extracted_data)

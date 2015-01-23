@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
-from six import PY2, Iterator, text_type, callable as six_callable, \
-    string_types
+from __future__ import absolute_import, unicode_literals
+
+import six
 
 
-###############################################################################
-
-
-__all__ = "Water",
-
-
-###############################################################################
-
-
-class Water(Iterator):
+class Water(six.Iterator):
     """
     Just simple wrapper around BeautifulSoup to avoid "if"-mess.
     """
@@ -61,20 +53,20 @@ class Water(Iterator):
         return self
 
     def __call__(self, *args, **kwargs):
-        if six_callable(self._soup):
+        if six.callable(self._soup):
             return Water(self._soup(*args, **kwargs))
         return self
 
     def __str__(self):
         if self._soup:
             text = self._soup
-            if not isinstance(self._soup, string_types):
+            if not isinstance(self._soup, six.string_types):
                 text = self._soup.get_text()
-            return text_type(text.strip())
+            return six.text_type(text.strip())
         else:
-            return text_type("")
+            return ""
 
-    if PY2:
+    if six.PY2:
         def __unicode__(self):
             return self.__str__()
 

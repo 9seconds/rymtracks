@@ -5,12 +5,12 @@ http://amazon.com
 """
 
 
-from ..base import HTMLMixin, WebService
+from __future__ import absolute_import, unicode_literals
 
-from re import compile as regex_compile
+import re
 
-
-##############################################################################
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 
 
 class Amazon(HTMLMixin, WebService):
@@ -19,9 +19,7 @@ class Amazon(HTMLMixin, WebService):
     """
 
     # This regexp is intended to remove leading track numbers from titles.
-    LEADING_NUMBER = regex_compile(r"^\d+\.\s*")
-
-    # ------------------------------------------------------------------------
+    LEADING_NUMBER = re.compile(r"^\d+\.\s*")
 
     def fetch_tracks(self, soup):
         table = soup.select("#albumTrackList > table")[1].table

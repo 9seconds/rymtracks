@@ -5,7 +5,9 @@ http://allmusic.com
 """
 
 
-from ..base import SchemaOrgService
+from __future__ import absolute_import, unicode_literals
+
+from ..schemaorg_service import SchemaOrgService
 
 
 ###############################################################################
@@ -15,4 +17,5 @@ class AllMusic(SchemaOrgService):
     """
     Implementation of Service which is intended to parse AMG.
     """
+
     pass

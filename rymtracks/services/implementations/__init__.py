@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+from ..service import Service
 from .allmusic import AllMusic
 from .amazon import Amazon
 from .archiveorg import ArchiveOrg
@@ -18,16 +18,9 @@ from .musicbrainz import MusicBrainz
 from .progarchives import ProgArchives
 from .rateyourmusic import RateYourMusic
 from .sevendigital import SevenDigital
-from ..base import Service
-
-
-###############################################################################
 
 
 FILESYSTEM_LOCATION = "*"
-
-
-###############################################################################
 
 
 Service.register(AllMusic, "allmusic.com")

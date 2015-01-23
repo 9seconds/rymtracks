@@ -26,5 +26,5 @@ class Capitalization(object):
         Capitalizes whole text.
         """
 
-        sentences = six.map(cls.capitalize_sentence, nltk.sent_tokenize(text))
+        sentences = six.moves.map(cls.capitalize_sentence, nltk.sent_tokenize(text))
         return " ".join(sentences)

@@ -5,14 +5,14 @@ http://discogs.com
 """
 
 
-from ..base import SchemaOrgService
+from __future__ import absolute_import, unicode_literals
 
-
-##############################################################################
+from ..schemaorg_service import SchemaOrgService
 
 
 class Discogs(SchemaOrgService):
     """
     Implementation of Service which is intended to parse Discogs.
     """
+
     pass

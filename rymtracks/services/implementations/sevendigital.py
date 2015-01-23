@@ -5,10 +5,9 @@ http://7digital.com
 """
 
 
-from ..base import SchemaOrgService
+from __future__ import absolute_import, unicode_literals
 
-
-##############################################################################
+from ..schemaorg_service import SchemaOrgService
 
 
 class SevenDigital(SchemaOrgService):

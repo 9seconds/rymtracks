@@ -100,10 +100,10 @@ def main():
 
     opts = docopt.docopt( __doc__, version=VERSION)
 
-    locations = list(six.map(encode, opts["<location>"]))
+    locations = list(six.moves.map(encode, opts["<location>"]))
     if opts["-f"]:
         with open(opts["-f"], "r") as res:
-            locations.extend(six.map(encode, res))
+            locations.extend(six.moves.map(encode, res))
 
     if opts["-l"]:
         return print_service_locations()

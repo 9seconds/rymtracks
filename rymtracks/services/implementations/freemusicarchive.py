@@ -5,12 +5,12 @@ http://freemusicarchive.com
 """
 
 
-from ..base import HTMLMixin, WebService
+from __future__ import absolute_import, unicode_literals
 
-from six import text_type
+import six
 
-
-##############################################################################
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 
 
 class FreeMusicArchive(HTMLMixin, WebService):
@@ -28,4 +28,4 @@ class FreeMusicArchive(HTMLMixin, WebService):
         length = container.find("span", class_="playtxt")
         length.a.decompose()
         length.b.decompose()
-        return text_type(length).strip("() ")
+        return six.text_type(length).strip("() ")

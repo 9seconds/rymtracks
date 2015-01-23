@@ -65,7 +65,7 @@ def init(path):
 
     for language in nltk.corpus.stopwords.fileids():
         stopwords_set = frozenset(nltk.corpus.stopwords.words(language))
-        stopwords_set = six.map(nltk.wordpunct_tokenize, stopwords_set)
+        stopwords_set = six.moves.map(nltk.wordpunct_tokenize, stopwords_set)
         stopwords_set = itertools.chain.from_iterable(stopwords_set)
         PRECALCULATED_LANGSETS[language] = frozenset(stopwords_set)
 

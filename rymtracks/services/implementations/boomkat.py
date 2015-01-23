@@ -5,14 +5,13 @@ http://boomkat.com
 """
 
 
-from ..base import HTMLMixin, WebService
+from __future__ import absolute_import, unicode_literals
 
-from re import compile as regex_compile
+import re
+import six
 
-from six import text_type
-
-
-##############################################################################
+from ..mixins import HTMLMixin
+from ..webservice import WebService
 
 
 class Boomkat(HTMLMixin, WebService):
@@ -21,7 +20,7 @@ class Boomkat(HTMLMixin, WebService):
     """
 
     # This regexp is intended to remove leading track numbers from titles.
-    LEADING_NUMBER = regex_compile(r"^\d+\.\s*")
+    LEADING_NUMBER = re.compile(r"^\d+\.\s*")
 
     def fetch_tracks(self, soup):
         return soup.select("#tracks-background-top div.tracks-listing")
@@ -29,7 +28,7 @@ class Boomkat(HTMLMixin, WebService):
     def fetch_name(self, container):
         title = container.find("div", class_="track-listing-title")
         title.span.decompose()
-        title = text_type(title)
+        title = six.text_type(title)
         title = self.LEADING_NUMBER.sub("", title)
         title = title.lstrip(": ").rstrip()
         return title

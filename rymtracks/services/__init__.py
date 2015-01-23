@@ -5,6 +5,9 @@ main service class.
 """
 
 
+FILESYSTEM_LOCATION = "*"
+
+
 import implementations
 
-from .base import Service
+from .service import Service
