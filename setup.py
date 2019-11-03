@@ -19,7 +19,7 @@ REQUIREMENTS = [
     "docopt==0.6.1",
     "nose==1.3.0",
     "six==1.5.2",
-    "nltk==2.0.4",
+    "nltk==3.4.5",
     "numpy==1.8.0",
     "requests==2.2.1",
     "colorama==0.2.7",
