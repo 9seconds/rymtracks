@@ -21,7 +21,7 @@ REQUIREMENTS = [
     "six==1.5.2",
     "nltk==2.0.4",
     "numpy==1.8.0",
-    "requests==2.2.1",
+    "requests==2.20.0",
     "colorama==0.2.7",
     "termcolor==1.1.0"
 ]
