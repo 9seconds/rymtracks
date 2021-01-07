@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 REQUIREMENTS = [
     "beautifulsoup4==4.3.2",
-    "lxml==3.3.0",
+    "lxml==4.6.2",
     "isodate==0.4.9",
     "docopt==0.6.1",
     "nose==1.3.0",
